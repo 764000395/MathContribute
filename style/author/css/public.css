@@ -1,0 +1,207 @@
+* {
+	font-size: 14px;
+	font-family: '微软雅黑';
+	margin: 0px;
+	padding: 0px
+}
+
+li {
+	list-style-type: none
+}
+
+a {
+	text-decoration: none;
+	color: blue
+}
+
+table,
+th,
+td {
+	border-collapse: collapse;
+	background: #fff
+}
+
+th,
+td {
+	padding: 8px 8px
+}
+
+.th {
+	white-space: nowrap;
+	text-align: left;
+	font-size: 15px;
+	color: #3B96CB;
+	background: url("../images/1_111219133417_2_03.gif") repeat-x;
+	font-weight: 800
+}
+
+.textarea {
+	border-radius: 5px;
+	width: 500px;
+	height: 200px;
+	border: 1px solid gray;
+	padding: 5px
+}
+
+img {
+	border: none;
+	vertical-align: middle
+}
+
+a.showPlus {
+	background: url("../images/action_add.png") no-repeat;
+	display: block;
+	width: 15px;
+	height: 15px;
+	margin-left: 5px
+}
+
+a.showMinus {
+	background: url("../images/action_remove.png") no-repeat;
+	display: block;
+	width: 15px;
+	height: 15px;
+	margin-left: 5px
+}
+
+.tableTop {
+	font-weight: 700;
+	text-align: left
+}
+
+.tdLittle0 {
+	width: 30px
+}
+
+.tdLittle1 {
+	width: 20px
+}
+
+.tdLittle2 {
+	width: 60px
+}
+
+.tdLtitle3 {
+	width: 65px
+}
+
+.tdLtitle4 {
+	width: 108px
+}
+
+.tdLtitle5 {
+	width: 94px
+}
+
+.tdLtitle6 {
+	width: 122px
+}
+
+.tdLtitle7 {
+	width: 170px
+}
+
+.center {
+	text-align: center
+}
+
+.table {
+	width: 100%;
+	margin-top: 3px
+}
+
+.table,
+.table td {
+	border: solid 1px #ccc
+}
+
+.table th {
+	border: solid 1px #ccc;
+	width: 100px;
+	text-align: center
+}
+
+.table thead tr td {
+	background: #eee;
+	color: #333
+}
+
+.span_server {
+	background: url("../images/base.png") no-repeat;
+	padding-left: 20px
+}
+
+.span_people {
+	background: url("../images/user.png") no-repeat;
+	padding-left: 20px
+}
+
+.input_button {
+	min-width: 60px;
+	width: auto;
+	height: 28px;
+	background: #3B96CB;
+	font-size: 13px;
+	color: #fff;
+	border: none;
+	font-weight: 600;
+	margin-left: 10px;
+	border-radius: 4px;
+	padding: 0 10px;
+	cursor: pointer
+}
+
+.input {
+	width: auto;
+	min-width: 500px;
+	max-width: 1200px;
+	height: 30px;
+	border-radius: 5px;
+	border: 1px solid gray;
+	padding-left: 5px
+}
+
+.input:focus,
+.textarea:focus {
+	border-color: #0074E8
+}
+
+.edit_article {
+	resize: none;
+	width: 100%;
+	height: 350px;
+	overflow: auto
+}
+
+.page {
+	width: 100%;
+	text-align: center;
+	margin-top: 20px
+}
+
+.page a {
+	margin-left: 2px;
+	border: 1px solid #ccc;
+	padding: 3px
+}
+
+.page strong {
+	margin-left: 2px;
+	border: 1px solid #ccc;
+	padding: 3px;
+	font-weight: 400
+}
+
+.admin_head_portrait {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%
+}
+.checkbox_input{
+	margin-left: 30px;
+}
+
+/*提示字体颜色*/
+.hint{
+	color: #5bc0de;
+}
