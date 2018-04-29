@@ -6,10 +6,15 @@ class Home extends CI_Controller {
 		parent::__construct();
 		$this->load->model('index_model');
 	}
+
+	/************************ 前端内容 Begin ************************/
+	//首页
 	public function index() {
 		$this->load->view('index/index.html');
 	}
+	/************************ 前端内容 End ************************/
 
+	/************************ 前台业务逻辑 Begin ************************/
 	/*
 		注册 register
 	 */
@@ -206,7 +211,8 @@ class Home extends CI_Controller {
 
 		$subject = '邮箱验证码——数学季刊投稿系统';
 		$message = '尊敬的' . $status[0]['realname'] . '您好，你正在进行修改登录密码操作，您的邮箱验证码为：' . $email_authcode . ' 请勿将此验证码发送给任何人。';
-		if ($this->_sendEmail($email, $subject, $message)) {
+		$this->load->library('myclass');
+		if ($this->myclass->send_email($email, $subject, $message)) {
 			$this->session->set_userdata(array('user_id' => $status[0]['user_id'], 'email_authcode' => $email_authcode));
 			$this->session->set_tempdata('sended_email', '1', 180);
 			$array = array(
@@ -333,33 +339,6 @@ class Home extends CI_Controller {
 		exit;
 	}
 
-	private function _sendEmail($to, $subject = '', $message = '') {
-		$this->load->library('email');
-		$this->email->clear();
-		$config = array(
-			'protocol' => 'smtp',
-			'smtp_host' => 'smtp.126.com',
-			'smtp_user' => 'ascexz@126.com',
-			'smtp_pass' => 'XIAOying111',
-			'validate' => TRUE,
-			'newwline' => '\r\n',
-			'crlf' => '\r\n',
-			'priority' => 1,
-			'smtp_port' => 25,
-			'charset' => 'utf-8',
-		);
-		$this->email->initialize($config);
-		$this->email->from('ascexz@126.com', 'asce');
-		$this->email->to($to);
-		$this->email->subject($subject);
-		$this->email->message($message);
-
-		/*if (!$this->email->send()) {
-			return $this->email->print_debugger();
-		}*/
-		return $this->email->send();
-	}
-
 	/*
 		17级座次表
 	 */
@@ -385,4 +364,5 @@ class Home extends CI_Controller {
 			$this->load->view('my_site.html', $data);
 		}
 	}
+	/************************ 前台业务逻辑 end ************************/
 }

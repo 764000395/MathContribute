@@ -223,7 +223,7 @@ class Admin extends CI_Controller {
 
 	/****************** 前台管理  Begin  *******************/
 
-	//季刊介绍 编委会 作者中心
+	//内容展示 包括：季刊介绍 编委会 作者中心 期刊订阅
 	public function content($action, $content_id) {
 		if (!is_numeric($content_id)) {
 			alert_msg('该栏目不存在');
@@ -354,6 +354,57 @@ class Admin extends CI_Controller {
 			}
 			$data['action'] = 'add';
 			$this->load->view('admin/home/dl_center.html', $data);
+		}
+	}
+
+	//友情链接
+	public function link($action, $id = 0) {
+		if (!is_numeric($id)) {
+			alert_msg('该信息不存在！');
+		}
+		if ($action == 'do') {
+			//执行操作
+			$data = array(
+				'content' => $this->input->post('content'),
+				'title' => $this->input->post('title'),
+			);
+
+			if ($id == 0) {
+				//执行添加操作 id为0表示数据库没有原来的链接信息 需要添加
+				$data['time'] = time();
+				$data['col_id'] = 8;
+				$status = $this->db->insert('content', $data);
+				$message = '添加';
+			} else {
+				//执行修改操作
+				$status = $this->db->update('content', $data, array('id' => $id));
+				$message = '修改';
+			}
+			$status ? alert_msg($message . '成功！') : alert_msg($message . '失败，请检查您的网络！');
+		} else if ($action == 'delete') {
+			//删除链接
+			$status = $this->db->delete('content', array('id' => $id));
+			$status ? alert_msg('删除成功！') : alert_msg('删除失败，请检查你的网络！');
+		} elseif ($action == 'top') {
+			//置顶操作
+			$content = $this->admin_model->get_content_info(array('id' => $id));
+			if (empty($content)) {
+				alert_msg('该条信息已被删除！');
+			}
+			$is_top = $content[0]['is_top'] == 0 ? 1 : 0;
+			$status = $this->db->update('content', array('is_top' => $is_top), array('id' => $id));
+			$status ? alert_msg('操作成功！') : alert_msg('操作失败，请检查您的网络！');
+		} else {
+			$offset = $id;
+			$where_arr = array('col_id' => 8);
+			$page_url = site_url('admin/admin/link/list');
+			$total_rows = $this->db->where($where_arr)->count_all_results('content');
+			$offset_uri_segment = 5;
+			$per_page = 10;
+			$this->load->library('myclass');
+			$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
+			$data['href'] = $this->admin_model->get_content_list($where_arr, $offset, $per_page);
+			$this->load->view('admin/home/link.html', $data);
 		}
 	}
 	/****************** 前台管理  End  *******************/
