@@ -248,6 +248,7 @@
     <div class="login_back">
     </div>
     <div class="loginPage auto">
+        <form action="" method="post">
         <div class="auto">
             <div class="login_title">
                 <a id="close"><img src="<?=base_url('style/index')?>/img/close.png" alt=""/></a>
@@ -276,6 +277,7 @@
                 <a href="<?=site_url('home/forget_password')?>" title="找回密码" class="forget_pwd">忘记密码？</a>
             </div>
         </div>
+        </form>
     </div>
 </body>
 
@@ -294,7 +296,8 @@ $('#close').click(function() {
     $('.login_back').hide();
 });
 
-$('#login_submit').click(function() {
+$('#login_submit').click(function(e) {
+    e.preventDefault();
     var username = $("input[name='username']").val();
     var password = $("input[name='password']").val();
     var authcode = $("input[name='authcode']").val();
