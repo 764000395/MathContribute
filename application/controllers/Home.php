@@ -10,7 +10,36 @@ class Home extends CI_Controller {
 	/************************ 前端内容 Begin ************************/
 	//首页
 	public function index() {
-		$this->load->view('index/index.html');
+		$data['link'] = $this->index_model->get_link_list();
+		$this->load->view('index/index.html', $data);
+	}
+
+	//栏目内容页
+	public function content($col_id) {
+		if (!is_numeric($col_id)) {
+			alert_msg('您访问的内容不存在！');
+		}
+
+		//获取栏目信息
+		$pid = $this->index_model->get_col_info(array('col_id' => $col_id));
+		if (empty($pid)) {
+			alert_msg('您访问的内容不存在！');
+		}
+		$data['this_col_name'] = $pid[0]['col_name'];
+		//判断是否为1级栏目
+		if ($pid[0]['pid'] != 0) {
+			$data['col'] = $this->index_model->get_col_info(array('pid' => $pid[0]['pid']));
+		} else {
+			$data['col'] = $pid;
+		}
+
+		//该栏目内容
+		$content = $this->index_model->get_content_info(array('col_id' => $col_id));
+		if (empty($content)) {
+			alert_msg('您访问的信息不存在');
+		}
+		$data['content'] = $content[0];
+		$this->load->view('index/content.html', $data);
 	}
 	/************************ 前端内容 End ************************/
 
@@ -124,6 +153,32 @@ class Home extends CI_Controller {
 		$this->load->view('index/login.html');
 	}
 
+	/*
+		检查登录状态
+	 */
+	public function login_test($identity, $type = '') {
+		if ($identity == $this->session->userdata('identity')) {
+			if ($type == 'ajax') {
+				$data = array(
+					'code' => 200,
+					'message' => '请先登录！',
+				);
+				$this->_get_type($data);
+			} else {
+				header('location:' . site_url('index/myhome'));
+			}
+		} else {
+			if ($type == 'ajax') {
+				$data = array(
+					'code' => 400,
+					'message' => '请先登录！',
+				);
+				$this->_get_type($data);
+			} else {
+				header('location:' . site_url('home/login'));
+			}
+		}
+	}
 	/*
 		忘记密码
 	 */

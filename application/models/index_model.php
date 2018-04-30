@@ -2,6 +2,28 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Index_model extends CI_model {
+	/************************ 前端内容 Begin ************************/
+	//获取友情链接  友情链接col_id=8
+	public function get_link_list() {
+		$get_info = 'id, title, content, time, is_top';
+		$status = $this->db->select($get_info)->order_by('is_top DESC, time DESC')->get_where('content', array('col_id' => 8))->result_array();
+		return $status;
+	}
+
+	//获取栏目内容
+	public function get_content_info($where_arr) {
+		$get_info = 'id, title, content, time';
+		$status = $this->db->select($get_info)->get_where('content', $where_arr)->result_array();
+		return $status;
+	}
+
+	//获取栏目信息
+	public function get_col_info($where_arr) {
+		$status = $this->db->get_where('col', $where_arr)->result_array();
+		return $status;
+	}
+
+	/************************ 前台业务逻辑 Begin ************************/
 	/*
 		用户验证
 		email is username
@@ -76,4 +98,5 @@ class Index_model extends CI_model {
 		$status = $this->db->select($get_info)->join('article', 'suggest.article_id = article.article_id', 'inner')->get_where('suggest', $where_arr)->result_array();
 		return $status;
 	}
+	/************************ 前台业务逻辑 End ************************/
 }

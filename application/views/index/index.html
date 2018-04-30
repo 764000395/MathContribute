@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.1, user-scalable=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=0.1, user-scalable=no" />
     <meta name="description" content="">
     <meta name="keywords" content="数学季刊,河南大学,数学季刊网站">
     <link rel="stylesheet" type="text/css" href="<?=base_url('style/index')?>/css/all.css">
@@ -218,7 +218,16 @@
                 <h4>友情链接</h4>
             </div> -->
             <div class="link_links">
-                <ul>
+                <?php foreach($link as $num_k=>$v):?>
+                <?=$num_k%5 == 0?'<ul>':''?>
+                    <li>
+                        <a href="<?=$v['content']?>">
+                            <?=$v['title']?>
+                        </a>
+                    </li>
+                    <?=($num_k+1)%5 == 0?'</ul>':''?>
+                        <?php endforeach;?>
+                        <!--  <ul>
                     <li><a href="">友情链接</a></li>
                     <li><a href="">友情链接</a></li>
                     <li><a href="">友情链接</a></li>
@@ -231,14 +240,7 @@
                     <li><a href="">友情链接</a></li>
                     <li><a href="">友情链接</a></li>
                     <li><a href="">友情链接</a></li>
-                </ul>
-                <ul>
-                    <li><a href="">友情链接</a></li>
-                    <li><a href="">友情链接</a></li>
-                    <li><a href="">友情链接</a></li>
-                    <li><a href="">友情链接</a></li>
-                    <li><a href="">友情链接</a></li>
-                </ul>
+                </ul> -->
             </div>
         </div>
     </div>
@@ -249,34 +251,34 @@
     </div>
     <div class="loginPage auto">
         <form action="" method="post">
-        <div class="auto">
-            <div class="login_title">
-                <a id="close"><img src="<?=base_url('style/index')?>/img/close.png" alt=""/></a>
-            </div>
-            <p class="title">作者登录</p>
-            <div class="login_main">
-                <ul class="auto">
-                    <li><span>用户名</span>
-                        <input type="email" placeholder="请输入您的邮箱" required="required" name="username" />
-                    </li>
-                    <li><span>密码</span>
-                        <input type="password" required="required" placeholder="请输入密码" name="password" />
-                    </li>
-                    <li><span>验证码</span>
-                        <input id="yz" type="text" required="required" name="authcode" /><a href="javascript:void(0)" onclick="document.getElementById('yanzhengma').src='<?php echo site_url('home/authcode'); ?>/'+Math.random()" style="display:inline-block; height:40px; float:right;">
+            <div class="auto">
+                <div class="login_title">
+                    <a id="close"><img src="<?=base_url('style/index')?>/img/close.png" alt=""/></a>
+                </div>
+                <p class="title">作者登录</p>
+                <div class="login_main">
+                    <ul class="auto">
+                        <li><span>用户名</span>
+                            <input type="email" placeholder="请输入您的邮箱" required="required" name="username" />
+                        </li>
+                        <li><span>密码</span>
+                            <input type="password" required="required" placeholder="请输入密码" name="password" />
+                        </li>
+                        <li><span>验证码</span>
+                            <input id="yz" type="text" required="required" name="authcode" /><a href="javascript:void(0)" onclick="document.getElementById('yanzhengma').src='<?php echo site_url('home/authcode'); ?>/'+Math.random()" style="display:inline-block; height:40px; float:right;">
                             <img  id="yanzhengma" src="<?php echo site_url('home/authcode'); ?>/<?php echo rand();?>" style="border-radius: 5px;"/>
                         </a></li>
-                </ul>
-                <input type="hidden">
+                    </ul>
+                    <input type="hidden">
+                </div>
+                <div class="login_button_box">
+                    <button class="auto" id="login_submit">登录</button>
+                    <a href="<?=site_url('home/register')?>" class="register">注册</a>
+                </div>
+                <div class="forget_pwd_box">
+                    <a href="<?=site_url('home/forget_password')?>" title="找回密码" class="forget_pwd">忘记密码？</a>
+                </div>
             </div>
-            <div class="login_button_box">
-                <button class="auto" id="login_submit">登录</button>
-                <a href="<?=site_url('home/register')?>" class="register">注册</a>
-            </div>
-            <div class="forget_pwd_box">
-                <a href="<?=site_url('home/forget_password')?>" title="找回密码" class="forget_pwd">忘记密码？</a>
-            </div>
-        </div>
         </form>
     </div>
 </body>
@@ -285,10 +287,17 @@
 <script type="text/javascript" src="<?=base_url('style/index')?>/js/all.js"></script>
 <script type="text/javascript">
 function loginshow(identity, identity_en) {
-    $('.loginPage .title').html(identity + "登录");
-    $('.login_button_box .register').attr('href', '<?=site_url("home/register/see/")?>' + identity_en);
-    $('.login_back').show();
-    $('.loginPage').fadeIn(500);
+    var url = "<?=site_url('home/login_test/')?>" + identity_en + '/' + 'ajax';
+    $.get(url, function(data) {
+        if (data.code == 200) {
+            location.href = "<?=site_url('index/myhome')?>";
+        }else{
+            $('.loginPage .title').html(identity + "登录");
+            $('.login_button_box .register').attr('href', '<?=site_url("home/register/see/")?>' + identity_en);
+            $('.login_back').show();
+            $('.loginPage').fadeIn(500);
+        }
+    }, 'json');
 };
 
 $('#close').click(function() {

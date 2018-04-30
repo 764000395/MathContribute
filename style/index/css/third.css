@@ -1,4 +1,4 @@
-.newslist_content{overflow:hidden;padding:0 15px 50px 15px;background:#F9F9FA; }
+.newslist_content{margin-top: 20px; min-height: 350px;}
 .contents{ }
 .contents h2 {text-align: center;line-height: 50px;}
 .info{text-align: center;margin: 10px;}
