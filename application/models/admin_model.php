@@ -79,7 +79,7 @@ class Admin_model extends CI_Model {
 		return $status;
 	}
 
-	//获取内容相关
+	//获取内容相关信息
 	public function get_content_info($where_arr) {
 		$status = $this->db->get_where('content', $where_arr)->result_array();
 		return $status;

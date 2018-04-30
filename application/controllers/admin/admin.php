@@ -150,7 +150,7 @@ class Admin extends CI_Controller {
 		$data['link'] = '';
 		$this->load->view($view_html, $data);
 	}
-	/****************** 用户相关相关 END *******************/
+	/****************** 用户相关 END *******************/
 
 	/****************** 稿件相关  BEGIN  *******************/
 
@@ -247,6 +247,71 @@ class Admin extends CI_Controller {
 		}
 	}
 
+	//作者指南
+	public function author_center($action, $id = 0) {
+		if (!is_numeric($id)) {
+			alert_msg('您访问的内容不存在！');
+		}
+		//添加页面 或者是修改页面
+		if ($action == 'see') {
+
+			if ($id == 0) {
+				//添加页面
+				$data['content'] = array('title' => '', 'content' => '');
+				$data['action'] = 'add';
+			} else {
+				$data['action'] = 'edit';
+				$content = $this->admin_model->get_content_info(array('id' => $id));
+				if (empty($content)) {
+					alert_msg('您访问的内容不存在！');
+				}
+				$data['content'] = $content[0];
+			}
+			$this->load->view('admin/home/author_center.html', $data);
+		} else if ($action == 'do') {
+			//添加和编辑操作
+			$data = array(
+				'title' => $this->input->post('title'),
+				'content' => $this->input->post('content', false),
+			);
+			if ($id == 0) {
+				//添加操作
+				$data['time'] = time();
+				$data['col_id'] = 14; //作者指南col_id=>14
+				$status = $this->db->insert('content', $data);
+				$message = '添加';
+			} else {
+				$status = $this->db->update('content', $data, array('id' => $id));
+				$message = '操作';
+			}
+			$status ? alert_msg($message . '成功！') : alert_msg($message . '失败，请检查您的网络！');
+		} else if ($action == 'delete') {
+			//删除链接
+			$status = $this->db->delete('content', array('id' => $id));
+			$status ? alert_msg('删除成功！') : alert_msg('删除失败，请检查你的网络！');
+		} elseif ($action == 'top') {
+			//置顶操作
+			$content = $this->admin_model->get_content_info(array('id' => $id));
+			if (empty($content)) {
+				alert_msg('该条信息已被删除！');
+			}
+			$is_top = $content[0]['is_top'] == 0 ? 1 : 0;
+			$status = $this->db->update('content', array('is_top' => $is_top), array('id' => $id));
+			$status ? alert_msg('操作成功！') : alert_msg('操作失败，请检查您的网络！');
+		} else {
+			$offset = $id;
+			$where_arr = array('col_id' => 14);
+			$page_url = site_url('admin/admin/author_center/list');
+			$total_rows = $this->db->where($where_arr)->count_all_results('content');
+			$offset_uri_segment = 5;
+			$per_page = 10;
+			$this->load->library('myclass');
+			$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
+			$data['content'] = $this->admin_model->get_content_list($where_arr, $offset, $per_page);
+			$this->load->view('admin/home/author_center_list.html', $data);
+		}
+	}
+
 	//在线期刊  未完成
 	public function periodical($type, $offset = 0) {
 		$season = get_season_time();
@@ -301,7 +366,7 @@ class Admin extends CI_Controller {
 			//修改下载文件
 			$data = array(
 				'title' => $this->input->post('title'),
-				'content' => $_POST['content'],
+				'content' => $this->input->post('content', false),
 				'time' => time(),
 
 			);
