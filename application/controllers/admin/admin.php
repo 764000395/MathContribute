@@ -248,7 +248,7 @@ class Admin extends CI_Controller {
 	}
 
 	//作者指南
-	public function author_center($action, $id = 0) {
+	public function author_center($action, $id = 0, $col_id = 14) {
 		if (!is_numeric($id)) {
 			alert_msg('您访问的内容不存在！');
 		}
@@ -265,6 +265,7 @@ class Admin extends CI_Controller {
 				}
 				$data['content'] = $content[0];
 			}
+			$data['col_id'] = $col_id;
 			$this->load->view('admin/home/author_center.html', $data);
 		} else if ($action == 'do') {
 			//添加和编辑操作
@@ -275,7 +276,7 @@ class Admin extends CI_Controller {
 			if ($id == 0) {
 				//添加操作
 				$data['time'] = time();
-				$data['col_id'] = 14; //作者指南col_id=>14
+				$data['col_id'] = $col_id; //作者指南col_id=>14
 				$status = $this->db->insert('content', $data);
 				$message = '添加';
 			} else {
@@ -298,7 +299,7 @@ class Admin extends CI_Controller {
 			$status ? alert_msg('操作成功！') : alert_msg('操作失败，请检查您的网络！');
 		} else {
 			$offset = $id;
-			$where_arr = array('col_id' => 14);
+			$where_arr = array('col_id' => $col_id);
 			$page_url = site_url('admin/admin/author_center/list');
 			$total_rows = $this->db->where($where_arr)->count_all_results('content');
 			$offset_uri_segment = 5;
@@ -306,6 +307,7 @@ class Admin extends CI_Controller {
 			$this->load->library('myclass');
 			$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
 			$data['content'] = $this->admin_model->get_content_list($where_arr, $offset, $per_page);
+			$data['col_id'] = $col_id;
 			$this->load->view('admin/home/author_center_list.html', $data);
 		}
 	}
