@@ -14,7 +14,55 @@ class Home extends CI_Controller {
 		$this->load->view('index/index.html', $data);
 	}
 
-	//栏目内容页
+	public function comment($action = 'see') {
+		if ($action == 'do') {
+			//判断留言是否过于频发
+			if (!empty($this->session->tempdata('done'))) {
+				$array = array(
+					'code' => 400,
+					'message' => '对不起，您的留言过于频繁，请5分钟后再试！',
+				);
+				$this->_get_type($array);
+			}
+
+			//留言内容不能超过256个字
+			$content = $this->input->post('content');
+			if (mb_strlen($content) > 256) {
+				$array = array(
+					'code' => 400,
+					'message' => '对不起，留言内容请不要超过256个字！',
+				);
+				$this->_get_type($array);
+			}
+
+			//执行留言操作
+			$data = array(
+				'realname' => $this->input->post('realname'),
+				'email' => $this->input->post('email'),
+				'content' => $content,
+				'time' => time(),
+			);
+			if ($this->db->insert('comment', $data)) {
+				$array = array(
+					'code' => 200,
+					'message' => '恭喜您留言成功，我们会尽快给您回复！',
+				);
+				//设置5分钟的session 防止留言过于频繁
+				$this->session->set_tempdata('done', 'have_done', 300);
+			} else {
+				$array = array(
+					'code' => 400,
+					'message' => '留言失败，请检查您的网络！',
+				);
+			}
+			$this->_get_type($array);
+
+		} else {
+			$this->load->view('index/comment.html');
+		}
+	}
+
+	//栏目直接对应内容页
 	public function content($col_id) {
 		if (!is_numeric($col_id)) {
 			alert_msg('您访问的内容不存在！');

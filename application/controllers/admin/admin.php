@@ -222,15 +222,41 @@ class Admin extends CI_Controller {
 	/****************** 稿件相关  END  *******************/
 
 	/****************** 前台管理  Begin  *******************/
+	//留言管理
+	public function comment($action, $id = 0) {
+		if (!is_numeric($id)) {
+			alert_msg('您访问的内容不存在！');
+		}
 
-	//内容展示 包括：季刊介绍 编委会 作者中心 期刊订阅
+		if ($action == 'delete') {
+			//删除留言
+			if ($this->db->delete('comment', array('id' => $id))) {
+				alert_msg('删除成功！');
+			} else {
+				alert_msg('删除失败，请检查你的网络！');
+			}
+		} else {
+			//留言列表
+			$where_arr = array();
+			$page_url = site_url('admin/admin/comment/list');
+			$data['total_rows'] = $this->db->where($where_arr)->count_all_results('comment');
+			$offset_uri_segment = 5;
+			$per_page = 10;
+			$this->load->library('myclass');
+			$this->myclass->fenye($page_url, $data['total_rows'], $offset_uri_segment, $per_page);
+			$offset = $id;
+			$data['comment'] = $this->admin_model->get_comment_list($where_arr, $offset, $per_page);
+			$this->load->view('admin/home/comment_list.html', $data);
+		}
+	}
+
+	//内容展示 包括：季刊介绍 编委会  期刊订阅 联系我们
 	public function content($action, $content_id) {
 		if (!is_numeric($content_id)) {
 			alert_msg('该栏目不存在');
 		}
 		$content = $this->admin_model->get_content_info(array('id' => $content_id));
 		if ($action == 'edit') {
-			$content = $_POST['content'];
 			if (empty($content)) {
 				$status = $this->db->insert('content', array('id' => $content_id, 'content' => $_POST['content']));
 			} else {
@@ -247,7 +273,7 @@ class Admin extends CI_Controller {
 		}
 	}
 
-	//作者指南
+	//作者指南col_id=>14 审者指南col_id=>17 常见疑问col_id=>27
 	public function author_center($action, $id = 0, $col_id = 14) {
 		if (!is_numeric($id)) {
 			alert_msg('您访问的内容不存在！');

@@ -67,6 +67,11 @@ class Admin_model extends CI_Model {
 
 	/****************** 前台管理相关  BEGIN  *******************/
 
+	//留言管理
+	public function get_comment_list($where_arr, $offset, $per_page) {
+		$status = $this->db->order_by('time DESC')->limit($per_page, $offset)->get_where('comment', $where_arr)->result_array();
+		return $status;
+	}
 	//获取栏目相关
 	public function get_col_info($where_arr) {
 		$status = $this->db->get_where('col', $where_arr)->result_array();
