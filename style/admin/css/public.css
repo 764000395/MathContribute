@@ -98,6 +98,18 @@ a.showMinus{
 	border-radius: 4px;
 	cursor: pointer;
 }
+.a_button{
+	padding: 10px 20px;
+	height: 28px;
+	background: #3B96CB;
+	font-size: 15px;
+	color:#fff;
+	border: none;
+	font-weight: 600;
+	margin-left: 10px;
+	border-radius: 4px;
+	cursor: pointer;
+}
 .input{
 	width: 340px;
 	height: 30px;

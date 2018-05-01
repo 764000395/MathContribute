@@ -257,10 +257,8 @@ class Admin extends CI_Controller {
 
 			if ($id == 0) {
 				//添加页面
-				$data['content'] = array('title' => '', 'content' => '');
-				$data['action'] = 'add';
+				$data['content'] = array('id' => 0, 'title' => '', 'content' => '');
 			} else {
-				$data['action'] = 'edit';
 				$content = $this->admin_model->get_content_info(array('id' => $id));
 				if (empty($content)) {
 					alert_msg('您访问的内容不存在！');

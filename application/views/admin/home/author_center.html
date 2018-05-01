@@ -11,11 +11,11 @@
 </head>
 
 <body>
-	<form action="<?=site_url('admin/admin/author_center/'.$action.'/'.$content['id'])?>" method="post">
+	<form action="<?=site_url('admin/admin/author_center/do/'.$content['id'])?>" method="post">
     <table class="table">
         <tr>
             <td align="center">
-                <input type="text" name="title" class="input" value="<?=$content['id']?>" placeholder="请输入标题" required="required" style="width: 800px">
+                <input type="text" name="title" class="input" value="<?=$content['title']?>" placeholder="请输入标题" required="required" style="width: 800px">
             </td>
         </tr>
         <tr>
