@@ -423,7 +423,7 @@ class Admin extends CI_Controller {
 	}
 
 	//友情链接
-	public function link($action, $id = 0) {
+	public function link($action, $id = 0, $col_id = 24) {
 		if (!is_numeric($id)) {
 			alert_msg('该信息不存在！');
 		}
@@ -437,7 +437,7 @@ class Admin extends CI_Controller {
 			if ($id == 0) {
 				//执行添加操作 id为0表示数据库没有原来的链接信息 需要添加
 				$data['time'] = time();
-				$data['col_id'] = 8;
+				$data['col_id'] = $col_id;
 				$status = $this->db->insert('content', $data);
 				$message = '添加';
 			} else {
@@ -461,7 +461,7 @@ class Admin extends CI_Controller {
 			$status ? alert_msg('操作成功！') : alert_msg('操作失败，请检查您的网络！');
 		} else {
 			$offset = $id;
-			$where_arr = array('col_id' => 8);
+			$where_arr = array('col_id' => $col_id);
 			$page_url = site_url('admin/admin/link/list');
 			$total_rows = $this->db->where($where_arr)->count_all_results('content');
 			$offset_uri_segment = 5;
@@ -469,6 +469,7 @@ class Admin extends CI_Controller {
 			$this->load->library('myclass');
 			$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
 			$data['href'] = $this->admin_model->get_content_list($where_arr, $offset, $per_page);
+			$data['col_id'] = $col_id;
 			$this->load->view('admin/home/link.html', $data);
 		}
 	}

@@ -13,9 +13,6 @@ class Index_model extends CI_model {
 		return $status;
 	}
 
-	public function get_info_list() {
-
-	}
 	//获取栏目内容
 	public function get_content_info($where_arr) {
 		$get_info = 'id, title, content, time, col_id';
