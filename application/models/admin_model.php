@@ -72,6 +72,18 @@ class Admin_model extends CI_Model {
 		$status = $this->db->order_by('time DESC')->limit($per_page, $offset)->get_where('comment', $where_arr)->result_array();
 		return $status;
 	}
+
+	//留言搜索
+	public function get_comment_search($search) {
+		$status = $this->db->like('email', $search)->or_like('content', $search)->or_like('realname', $search)->get('comment')->result_array();
+		return $status;
+	}
+
+	//获取留言信息
+	public function get_comment_info($where_arr) {
+		$status = $this->db->get_where('comment', $where_arr)->result_array();
+		return $status;
+	}
 	//获取栏目相关
 	public function get_col_info($where_arr) {
 		$status = $this->db->get_where('col', $where_arr)->result_array();

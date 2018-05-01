@@ -12,10 +12,8 @@
     <table class="table">
     	<form action="<?=site_url('admin/admin/comment/search')?>" method="post">
     	<tr>
-    		<td align="right">
-    			<input type="text" name="search" required="required" placeholder="请输入邮箱/留言内容关键字" class="input">
-    		</td>
-    		<td align="left">
+    		<td align="center">
+    			<input type="text" name="search" required="required" placeholder="请输入姓名/邮箱/留言内容关键字" class="input">
     			<input type="submit" value="搜索" class="input_button">
     		</td>
     	</tr>
@@ -34,7 +32,7 @@
     		<tr>
     			<td align="center"><?=$c['realname']?></td>
     			<td align="center"><?=$c['email']?></td>
-    			<td align="center"><?=$date('Y-m-d H:i:s', c['time'])?></td>
+    			<td align="center"><?=date('Y-m-d H:i:s', $c['time'])?></td>
     			<td><?=$c['content']?></td>
     			<td align="center">
     				【<a href="<?=$c['reply_status']==0?site_url('admin/admin/comment/reply/'.$c['id']):'javascript:void(0)'?>">

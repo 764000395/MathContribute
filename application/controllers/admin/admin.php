@@ -235,6 +235,18 @@ class Admin extends CI_Controller {
 			} else {
 				alert_msg('删除失败，请检查你的网络！');
 			}
+		} else if ($action == 'search') {
+			$search = $this->input->post('search');
+			$data['comment'] = $this->admin_model->get_comment_search($search);
+			$data['link'] = '';
+			$this->load->view('admin/home/comment_list.html', $data);
+		} else if ($action == 'reply') {
+			$comment = $this->admin_model->get_comment_info(array('id' => $id));
+			if (empty($comment)) {
+				alert_msg('您访问的内容不存在！');
+			}
+			$data['comment'] = $comment[0];
+			$this->load->view('admin/home/reply.html', $data);
 		} else {
 			//留言列表
 			$where_arr = array();
@@ -243,7 +255,7 @@ class Admin extends CI_Controller {
 			$offset_uri_segment = 5;
 			$per_page = 10;
 			$this->load->library('myclass');
-			$this->myclass->fenye($page_url, $data['total_rows'], $offset_uri_segment, $per_page);
+			$data['link'] = $this->myclass->fenye($page_url, $data['total_rows'], $offset_uri_segment, $per_page);
 			$offset = $id;
 			$data['comment'] = $this->admin_model->get_comment_list($where_arr, $offset, $per_page);
 			$this->load->view('admin/home/comment_list.html', $data);
