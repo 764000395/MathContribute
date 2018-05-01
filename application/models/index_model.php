@@ -3,16 +3,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Index_model extends CI_model {
 	/************************ 前端内容 Begin ************************/
-	//获取友情链接  友情链接col_id=8
-	public function get_link_list() {
+	//获取内容列表  友情链接col_id=8  作者指南col_id=14  审者指南col_id=17  下载中心col_id=7
+	public function get_content_list($where_arr, $offset = 0, $per_page = 10, $type = '') {
 		$get_info = 'id, title, content, time, is_top';
-		$status = $this->db->select($get_info)->order_by('is_top DESC, time DESC')->get_where('content', array('col_id' => 8))->result_array();
+		if ($type == 'fenye') {
+			$this->db->limit($per_page, $offset);
+		}
+		$status = $this->db->select($get_info)->order_by('is_top DESC, time DESC')->get_where('content', $where_arr)->result_array();
 		return $status;
 	}
 
+	public function get_info_list() {
+
+	}
 	//获取栏目内容
 	public function get_content_info($where_arr) {
-		$get_info = 'id, title, content, time';
+		$get_info = 'id, title, content, time, col_id';
 		$status = $this->db->select($get_info)->get_where('content', $where_arr)->result_array();
 		return $status;
 	}

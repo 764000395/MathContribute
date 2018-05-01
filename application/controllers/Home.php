@@ -10,7 +10,7 @@ class Home extends CI_Controller {
 	/************************ 前端内容 Begin ************************/
 	//首页
 	public function index() {
-		$data['link'] = $this->index_model->get_link_list();
+		$data['link'] = $this->index_model->get_content_list(array('col_id' => 8));
 		$this->load->view('index/index.html', $data);
 	}
 
@@ -40,6 +40,44 @@ class Home extends CI_Controller {
 		}
 		$data['content'] = $content[0];
 		$this->load->view('index/content.html', $data);
+	}
+
+	//作者指南 审者指南  下载中心
+	public function list($col_id, $offset = 0) {
+		$col = $this->index_model->get_col_info(array('col_id' => $col_id));
+		if (empty($col)) {
+			alert_msg('您访问的内容不存在！');
+		}
+		$data['col'] = $col[0];
+
+		$where_arr = array('col_id' => $col_id);
+		//获取分页link
+		$page_url = site_url('home/list/' . $col_id);
+		$total_rows = $this->db->where($where_arr)->count_all_results('content');
+		$offset_uri_segment = 4;
+		$per_page = 10;
+		$this->load->library('myclass');
+		$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
+
+		//获取内容
+		$data['content'] = $this->index_model->get_content_list($where_arr, $offset, $per_page, 'fenye');
+		$this->load->view('index/list.html', $data);
+	}
+
+	//列表内容
+	public function info($id) {
+		if (!is_numeric($id)) {
+			alert_msg('您访问的信息不存在！');
+		}
+
+		$content = $this->index_model->get_content_info(array('id' => $id));
+		if (empty($content)) {
+			alert_msg('您访问的信息不存在！');
+		}
+
+		$data['content'] = $content[0];
+		$data['col'] = $this->index_model->get_col_info(array('col_id' => $content[0]['col_id']))[0];
+		$this->load->view('index/info.html', $data);
 	}
 	/************************ 前端内容 End ************************/
 
