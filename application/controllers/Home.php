@@ -10,10 +10,34 @@ class Home extends CI_Controller {
 	/************************ 前端内容 Begin ************************/
 	//首页
 	public function index() {
-		$data['link'] = $this->index_model->get_content_list(array('col_id >=' => 21), array('col_id <=' => 24));
+		$data['link'] = $this->index_model->get_content_list(array('col_id >=' => 21, 'col_id <=' => 24));
+		$data['newest_article'] = $this->index_model->get_article_list(array('check_status' => 3), 0, 6);
 		$this->load->view('index/index.html', $data);
 	}
 
+	//稿件
+	public function article($action, $id = 0) {
+		if (!is_numeric($id)) {
+			alert_msg('您访问的内容不存在！');
+		}
+		//查看稿件
+		if ($action == 'see') {
+			//获取稿件信息
+			$article = $this->index_model->get_article_info(array('article_id' => $id, 'check_status' => 3));
+			//判断稿件是否存在
+			if (empty($article)) {
+				alert_msg('您访问的内容不存在！');
+			}
+
+			//阅读量+1
+			$this->db->update('article', array('read_total' => $article[0]['read_total'] + 1), array('article_id' => $id));
+
+			$data['article'] = $article[0];
+			$this->load->view('index/article.html', $data);
+		} else {
+
+		}
+	}
 	public function comment($action = 'see') {
 		if ($action == 'do') {
 			//判断留言是否过于频发

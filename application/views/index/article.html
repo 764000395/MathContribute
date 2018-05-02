@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.1">
+    <meta name="viewport" content="width=device-width, initial-scale=0.1" />
     <link rel="stylesheet" type="text/css" href="<?=base_url('style/index')?>/css/all.css">
     <link rel="stylesheet" type="text/css" href="<?=base_url('style/index')?>/css/third.css">
     <title>数学季刊</title>
@@ -18,7 +18,7 @@
     <div class="look section">
         <div class="main auto" id="look">
             <div class="look_title">
-                <h2><?=$this_col_name?></h2>
+                <h2>浏览稿件</h2>
             </div>
         </div>
     </div>
@@ -27,25 +27,23 @@
         <div class="main auto" id="newslist_main">
             <div class="newslist_title">
                 <ul>
-                    <?php foreach($col as $co):?>
-                    <li><a href="<?=site_url('home/content/'.$co['col_id'])?>"><?=$co['col_name']?></a></li>
-                    <?php endforeach;?>
+                    <li class="active"><a>浏览稿件</a></li>
                     <!-- <li><a href="">标题2</a></li>
                     <li><a href="">标题3</a></li>
                     <li><a href="">biaoti4</a></li> -->
                 </ul>
             </div>
-            <div class="newslist_content main">
-                    <!-- <h2>基本信息</h2>
+            <div class="newslist_content contents main">
+                    <h2><?=$article['title']?></h2>
                     <div class="info">
-                        <font>作者：</font>
-                        <font>时间：2017年05月22日 &nbsp;12:20</font>
-                        <font> 访问量：7370</font>
-                    </div> -->
-                    <?=$content['content']?>
-                <!-- <div class="download">
-                    <a href="">&gt;&gt;点击下载稿件，查看完整内容&lt;&lt;</a>
-                </div> -->
+                        <font>作者：<?=$article['author']?></font>
+                        <font>时间：<?=date('Y-m-d H:i:s', $article['use_time'])?></font>
+                        <font> 访问量：<?=$article['read_total']?></font>
+                    </div>
+                    <?=$article['abstract']?>
+                <div class="download">
+                    <a href="<?=site_url('home/download/'.$article['article_id'])?>">&gt;&gt;点击下载稿件，查看完整内容&lt;&lt;</a>
+                </div>
             </div>
         </div>
     </div>

@@ -26,6 +26,21 @@ class Index_model extends CI_model {
 		return $status;
 	}
 
+	//获取稿件列表
+	public function get_article_list($where_arr, $offset, $per_page = 10, $other_info = '') {
+		$get_info = 'article_id, title, use_time' . $other_info;
+		$status = $this->db->select()->order_by('use_time DESC')->limit($per_page, $offset)->get_where('article', $where_arr)->result_array();
+		return $status;
+	}
+
+	//获取稿件内容
+	public function get_article_info($where_arr) {
+		$get_info = 'article_id, title, author, abstract, keywords, create_time, use_time, read_total';
+		$status = $this->db->select($get_info)->get_where('article', $where_arr)->result_array();
+		return $status;
+	}
+	/************************ 前端内容 End ************************/
+
 	/************************ 前台业务逻辑 Begin ************************/
 	/*
 		用户验证

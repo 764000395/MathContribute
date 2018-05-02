@@ -370,7 +370,7 @@ class Admin extends CI_Controller {
 	public function periodical($type, $offset = 0) {
 		$season = get_season_time();
 		switch ($type) {
-		case 'now': //本期目录
+		case 'now': //当期目录
 			$season = get_season_time();
 			$where_arr = array('check_status' => 3);
 			break;
@@ -382,7 +382,7 @@ class Admin extends CI_Controller {
 
 			break;
 		default:
-			# code...
+			$where_arr = array('check_status' => 3);
 			break;
 		}
 		$per_page = 10;
@@ -393,7 +393,8 @@ class Admin extends CI_Controller {
 		$this->load->library('myclass');
 		$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
 		$status = $this->admin_model->get_article_list($where_arr, $offset, ', use_time');
-		$this->load->view('');
+		$data['article'] = $status;
+		$this->load->view('admin/home');
 
 	}
 

@@ -137,12 +137,14 @@
                         <a href="" class="more fright">more</a>
                     </div>
                     <ul class="padding">
+                        <?php foreach($newest_article as $n):?>
+                        <li><a href="<?=site_url('home/article/see/'.$n['article_id'])?>" title="<?=$n['title']?>"><?=mb_strlen($n['title'])>10?mb_substr($n['title'], 0, 10).'...':$n['title']?><font class="fright"><?=date('Y-m-d', $n['use_time'])?></font></a></li>
+                        <?php endforeach;?>
+                        <!-- <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
+                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li> -->
                     </ul>
                 </div>
                 <div class="info_items">
@@ -205,8 +207,8 @@
                 </div>
                 <div class="info_img">
                     <ul>
-                        <li><a href=""><img src="<?=base_url('style/index')?>/img/author.jpg" alt=""></a></li>
-                        <li><a href=""><img src="<?=base_url('style/index')?>/img/shenzhe.jpg" alt=""></a></li>
+                        <li><a href="<?=site_url('home/list/14')?>"><img src="<?=base_url('style/index')?>/img/author.jpg" alt="作者指南"></a></li>
+                        <li><a href="<?=site_url('home/list/17')?>"><img src="<?=base_url('style/index')?>/img/shenzhe.jpg" alt="审者指南"></a></li>
                     </ul>
                 </div>
             </div>
