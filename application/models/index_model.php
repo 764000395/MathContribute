@@ -39,6 +39,16 @@ class Index_model extends CI_model {
 		$status = $this->db->select($get_info)->get_where('article', $where_arr)->result_array();
 		return $status;
 	}
+
+	//获取搜索到的稿件列表
+	public function get_search_list($search) {
+		$get_info = 'article_id, title, use_time, check_status';
+		$like_sql = "(`author` LIKE '%{$search}%' ESCAPE '!' OR `title` LIKE '%{$search}%' ESCAPE '!' OR `abstract` LIKE '%{$search}%' ESCAPE '!')";
+		$sql = 'SELECT `article_id`, `title`, `use_time`, `check_status` FROM `article` WHERE `check_status` = 3 AND ' . $like_sql;
+		$status = $this->db->query($sql)->result_array();
+
+		return $status;
+	}
 	/************************ 前端内容 End ************************/
 
 	/************************ 前台业务逻辑 Begin ************************/

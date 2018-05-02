@@ -35,8 +35,44 @@ class Home extends CI_Controller {
 			$data['article'] = $article[0];
 			$this->load->view('index/article.html', $data);
 		} else {
+			switch ($action) {
+			case 'all_list':
+				$where_arr = array('check_status' => 3);
+				break;
+			case 'now_list':
+				# code...
+				break;
+			case 'last_list':
+				# code...
+				break;
+			case 'pass_list':
+				# code...
+				break;
+			default:
+				# code...
+				break;
+			}
+			$offset = $id;
+			//获取分页链接
+			$page_url = site_url('home/article/' . $action);
+			$total_rows = $this->db->where($where_arr)->count_all_results('article');
+			$offset_uri_segment = 3;
+			$per_page = 10;
+			$this->load->library('myclass');
+			$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
 
+			//获取列表稿件信息
+			$data['article'] = $this->index_model->get_article_list($where_arr, $offset, $per_page);
+			$this->load->view('index/article_list.html', $data);
 		}
+	}
+
+	//快速检索
+	public function search() {
+		$search = $this->input->post('search');
+		$data['article'] = $this->index_model->get_search_list($search);
+		$data['link'] = '';
+		$this->load->view('index/article_list.html', $data);
 	}
 	public function comment($action = 'see') {
 		if ($action == 'do') {

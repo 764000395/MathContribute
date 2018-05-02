@@ -8,9 +8,11 @@
                 <a href="<?=site_url('home/list/27')?>">常见疑问</a>
             </div>
             <div class="headinput">
-                <span>快速检索:</span>
-                <input type="text">
-                <button>GO</button>
+                <form action="<?=site_url('home/search')?>" method="post">
+                    <span>快速检索:</span>
+                    <input type="text" name="search" required="required">
+                    <button>GO</button>
+                </form>
             </div>
         </div>
     </div>

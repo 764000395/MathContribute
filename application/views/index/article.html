@@ -13,7 +13,6 @@
     <!--Head 头部 Begin-->
     <?php include('head.html');?>
     <!-- Head 头部 End -->
-
     <!-- look -->
     <div class="look section">
         <div class="main auto" id="look">
@@ -34,20 +33,25 @@
                 </ul>
             </div>
             <div class="newslist_content contents main">
-                    <h2><?=$article['title']?></h2>
-                    <div class="info">
-                        <font>作者：<?=$article['author']?></font>
-                        <font>时间：<?=date('Y-m-d H:i:s', $article['use_time'])?></font>
-                        <font> 访问量：<?=$article['read_total']?></font>
-                    </div>
-                    <?=$article['abstract']?>
+                <h2><?=$article['title']?></h2>
+                <div class="info">
+                    <font>作者：
+                        <?=$article['author']?>
+                    </font>
+                    <font>时间：
+                        <?=date('Y-m-d H:i:s', $article['use_time'])?>
+                    </font>
+                    <font> 访问量：
+                        <?=$article['read_total']?>
+                    </font>
+                </div>
+                <?=$article['abstract']?>
                 <div class="download">
                     <a href="<?=site_url('home/download/'.$article['article_id'])?>">&gt;&gt;点击下载稿件，查看完整内容&lt;&lt;</a>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Footer 底部 Begin -->
     <?php include('footer.html');?>
     <!-- Footer 底部 End -->

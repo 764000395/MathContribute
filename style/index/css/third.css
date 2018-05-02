@@ -1,7 +1,7 @@
 .newslist_content{margin-top: 20px; min-height: 350px;overflow-x: hidden;}
 .newslist_content img{max-width: 100%;}
 .contents h2 {text-align: center;line-height: 50px;}
-.info{text-align: center;margin: 10px;}
+.info{text-align: center;margin: 10px;font-size: 0.8em}
 .info font{margin: 0px 20px; color: gray;}
 .contents p{text-indent:2em;}
 .download{float: right;margin-top: 20px;}
