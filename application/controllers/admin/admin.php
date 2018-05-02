@@ -247,6 +247,22 @@ class Admin extends CI_Controller {
 			}
 			$data['comment'] = $comment[0];
 			$this->load->view('admin/home/reply.html', $data);
+		} else if ($action == 'do_reply') {
+			$comment = $this->admin_model->get_comment_info(array('id' => $id));
+			if (empty($comment)) {
+				alert_msg('该留言不存在！');
+			}
+			$email = $comment[0]['email'];
+			var_dump($email);
+			$subject = '数学季刊投稿系统留言回复';
+			$content = $this->input->post('repyl');
+			$this->load->library('myclass');
+			if ($this->myclass->send_email($email, $subject, $content)) {
+				$this->db->update('comment', array('repyl_status' => 1), array('id' => $id));
+				alert_msg('回复成功！');
+			} else {
+				alert_msg('回复失败，请检查你的网络！');
+			}
 		} else {
 			//留言列表
 			$where_arr = array();

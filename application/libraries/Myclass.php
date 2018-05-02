@@ -36,9 +36,9 @@ class Myclass {
 		$this->CI->email->clear();
 		$config = array(
 			'protocol' => 'smtp',
-			'smtp_host' => $this->CI->config->item('smtp_user'),
-			'smtp_user' => $this->CI->config->item('smtp_pass'),
-			'smtp_pass' => 'XIAOying111',
+			'smtp_host' => $this->CI->config->item('smtp_host'),
+			'smtp_user' => $this->CI->config->item('smtp_user'),
+			'smtp_pass' => $this->CI->config->item('smtp_pass'),
 			'validate' => TRUE,
 			'newwline' => '\r\n',
 			'crlf' => '\r\n',
