@@ -75,6 +75,46 @@ class Myhome extends MY_Controller {
 	}
 
 	/*
+		下载稿件，只有登陆权限限制,任何一个都可以下载
+	 */
+	public function download($article_id) {
+		//article_id必须为数字，防止sql注入
+		if (!is_numeric($article_id)) {
+			alert_msg('无法进行下载！', 'close');
+		}
+
+		$where_arr = array('article_id' => $article_id);
+		$article = $this->index_model->get_info_article($where_arr);
+		if (empty($article)) {
+			alert_msg('该稿件不存在，无法完下载！');
+		}
+
+		//如果是作者 判断是不是下载自己的稿件
+		if ($this->session->userdata('identity') == 'author') {
+			if ($this->session->userdata('user_id') != $article[0]['user_id']) {
+				alert_msg('你无权下载该稿件！');
+			}
+		}
+
+		//如果是专家，查看是否为自己审核的稿件
+		if ($this->session->userdata('identity') == 'specialist') {
+			$where_arr = array(
+				'user_id' => $this->session->userdata('user_id'),
+				'article_id' => $article_id,
+			);
+			if (empty($this->index_model->get_suggest_info($where_arr))) {
+				alert_msg('您无权下载该稿件！');
+			}
+		}
+		$this->load->helper('download');
+		$data = file_get_contents($this->config->item('MYPATH') . $article[0]['attachment_url']);
+
+		//匹配文件后缀名，重命名下载
+		preg_match('/.\w+$/', $article[0]['attachment_url'], $matches);
+		force_download($article[0]['title'] . $matches[0], $data);
+	}
+
+	/*
 		用户安全退出
 	 */
 	public function logout() {

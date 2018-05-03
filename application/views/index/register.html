@@ -21,7 +21,7 @@
             <form id="form_event" method="post">
                 <ul class="signIn_ul auto">
                     <li>
-                        <p>请填写个人信息完成注册</p>
+                        <p>请填写个人信息完成注册 &emsp;&emsp;&emsp;&emsp;您注册的身份为：<span style="font-size: 1.5em" class="hint"><?=format_user_identity($identity)?></span></p>
                     </li>
                     <li><span class="must">*</span><span class="itemname">邮箱</span>
                         <input type="email" required="required" name="email" placeholder="请输入常用邮箱">
@@ -94,6 +94,7 @@
             success:function (data) {
                 if(data.code==200){
                     alert(data.message);
+                    location.href="<?=site_url('index/myhome')?>";
                 }else{
                     alert(data.message);
                 }

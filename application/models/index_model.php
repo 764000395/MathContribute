@@ -57,8 +57,8 @@ class Index_model extends CI_model {
 		email is username
 	 */
 	public function get_user_info($email, $password) {
-		$get_info = 'user_id, identity, realname';
-		$status = $this->db->select($get_info)->get_where('user', array('email' => $email, 'password' => md5($password), 'status' => 1))->result_array();
+		$get_info = 'user_id, identity, realname, status';
+		$status = $this->db->select($get_info)->get_where('user', array('email' => $email, 'password' => md5($password)))->result_array();
 		return $status;
 	}
 

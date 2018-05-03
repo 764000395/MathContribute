@@ -10,7 +10,7 @@ class Editorial extends MY_Controller {
 
 	function __construct() {
 		parent::__construct();
-		if ($this->session->userdata('identity') != 'editorial') {
+		if ($this->session->userdata('identity') != 'editorial' || $this->session->userdata('identity') != 'edit') {
 			alert_msg('请以编委身份登录系统', 'go', site_url('home/login'));
 		}
 		$this->load->model('index_model');
@@ -50,7 +50,6 @@ class Editorial extends MY_Controller {
 			break;
 		case 'finalize': //编委会定稿
 			$where_arr = array('check_status' => 2);
-			$view_html = 'list_article_check.html';
 			$view_html = 'list_article_finalize.html';
 			break;
 		case 'doubt': //疑问稿件 -10=>初审疑问稿件 -11=>复审疑问稿件
@@ -185,7 +184,7 @@ class Editorial extends MY_Controller {
 		合格——录用=》use， 不合格——返修=》edit， 不合格——拒稿=》refuses
 	 */
 	public function finalize($article_id, $type) {
-		if (!is_numeric($article_id)) {
+		if (!is_numeric($article_id) || $this->session->userdata('identity') != 'editorial') {
 			$array = array(
 				'code' => 400,
 				'message' => '权限不足',
@@ -278,7 +277,7 @@ class Editorial extends MY_Controller {
 	}
 
 	/*
-		下载稿件，没有权限限制,任何一个都可以下载
+		下载稿件，只有登陆权限限制,任何一个都可以下载
 	 */
 	public function download($article_id) {
 		//article_id必须为数字，防止sql注入
@@ -298,10 +297,5 @@ class Editorial extends MY_Controller {
 		//匹配文件后缀名，重命名下载
 		preg_match('/.\w+$/', $article[0]['attachment_url'], $matches);
 		force_download($article[0]['title'] . $matches[0], $data);
-	}
-	private function _get_where_arr_by_type($type) {
-		$where_arr = '';
-
-		return $where_arr;
 	}
 }

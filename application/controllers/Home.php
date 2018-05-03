@@ -74,6 +74,8 @@ class Home extends CI_Controller {
 		$data['link'] = '';
 		$this->load->view('index/article_list.html', $data);
 	}
+
+	//在线留言
 	public function comment($action = 'see') {
 		if ($action == 'do') {
 			//判断留言是否过于频发
@@ -264,17 +266,25 @@ class Home extends CI_Controller {
 				'qq' => $this->input->post('qq'),
 				'edu_background' => $this->input->post('edu_background'),
 				'identity' => $this->input->post('identity'),
+				'register_time' => time(),
 			);
 
 			//如果注册的用户不是作者，将用户状态设置为0，需要通过后台管理员审核后才可使用
 			$register_info['status'] = $register_info['identity'] == 'author' ? 1 : 0;
 			$status = $this->db->insert('user', $register_info);
 			if ($status) {
-				$this->session->set_userdata(array('user_id' => $status, 'email' => $email, 'identity' => $register_info['identity']));
-				$array = array(
-					'code' => 200,
-					'message' => '注册成功',
-				);
+				if ($register_info['status'] == 0) {
+					$array = array(
+						'code' => 400,
+						'message' => '注册成功，我们会尽快为您审核，请耐心等待！',
+					);
+				} else {
+					$this->session->set_userdata(array('user_id' => $status, 'email' => $email, 'identity' => $register_info['identity']));
+					$array = array(
+						'code' => 200,
+						'message' => '注册成功',
+					);
+				}
 			} else {
 				$array = array(
 					'code' => 400,
@@ -309,6 +319,12 @@ class Home extends CI_Controller {
 			$array = array(
 				'code' => 400,
 				'message' => '用户名或密码不正确',
+			);
+			$this->_get_type($array);
+		} elseif ($status[0]['status'] != 1) {
+			$array = array(
+				'code' => 400,
+				'message' => '管理员正在审核中！审核完成后我们发邮件通知您，请耐心等待！',
 			);
 			$this->_get_type($array);
 		} else {
