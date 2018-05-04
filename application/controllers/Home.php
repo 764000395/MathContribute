@@ -519,17 +519,62 @@ class Home extends CI_Controller {
 		force_download($article[0]['title'] . $matches[0], $data);
 	}
 
-	public function ceshi() {
-		$status = 1;
-		$status && print_r('短路与，前面status为1，执行输出');
-		echo '<br>';
-		!$status && print_r('前面status为0,不执行输出');
-		echo '<br>';
-		$status || print_r('短路或，前面status为1，整个表达式值为1，后面不在执行');
-		echo '<br>';
-		!$status || print_r('前面status为0, 继续向后执行看后面是否成立，所以执行后面输出</br>');
-		$this->db->select('*')->get_where('user', array())->result_array();
-		echo $this->db->last_query();
+	public function ceshi($action) {
+		// $status = 1;
+		// $status && print_r('短路与，前面status为1，执行输出');
+		// echo '<br>';
+		// !$status && print_r('前面status为0,不执行输出');
+		// echo '<br>';
+		// $status || print_r('短路或，前面status为1，整个表达式值为1，后面不在执行');
+		// echo '<br>';
+		// !$status || print_r('前面status为0, 继续向后执行看后面是否成立，所以执行后面输出</br>');
+		// $this->db->select('*')->get_where('user', array())->result_array();
+		// echo $this->db->last_query();
+		if ($action == 'do') {
+			$config = array(
+				'upload_path' => './style/',
+				'allowed_types' => 'jpeg|jpg|png',
+
+			);
+			$this->load->library('upload', $config);
+			if ($this->upload->do_upload('myfile')) {
+				echo '文件上传成功';
+			} else {
+				$error = array('error' => $this->upload->display_errors());
+				print_r($error);
+			}
+			//print_r($_FILES);die;
+			// $myfile = array();
+			// for ($i = 0; $i < count($_FILES['myfile']['name']); $i++) {
+			// 	foreach ($_FILES['myfile'] as $key => $value) {
+			// 		$myfile[$i][$key] = $value[$i];
+			// 	}
+			// }
+			// $_FILES = array();
+			// //print_r($myfile);die;
+			// foreach ($myfile as $file) {
+			// 	$_FILES['file'] = $file;
+			// 	if ($this->upload->do_upload('file')) {
+			// 		echo '文件上传成功';
+			// 	} else {
+			// 		$error = array('error' => $this->upload->display_errors());
+			// 		print_r($error);
+			// 	}
+			// }
+
+		}
+		$this->load->view('ceshi.html');
+	}
+
+	public function ceshi2($action = 'see') {
+		if ($action == 'do') {
+			$config = array(
+				'upload_path' => './style/',
+			);
+			$this->load->library('upload', $config);
+			print_r($_FILES);
+		}
+		$this->load->view('ceshi2.html');
 	}
 	/*
 		验证码

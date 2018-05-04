@@ -21,7 +21,7 @@ class Edit extends MY_Controller {
 	 */
 	public function list_article($type, $offset = 0) {
 		$where_arr = array();
-		$view_html = 'list_article.html';
+		$view_html = 'editorial/list_article.html';
 		switch ($type) {
 		case 'all': //全部稿件
 			$where_arr = array();
@@ -40,21 +40,21 @@ class Edit extends MY_Controller {
 			break;
 		case 'assign_first': //指定初审
 			$where_arr = array('check_status' => 0, 'allot_status' => 0);
-			$view_html = 'list_article_check.html';
+			$view_html = 'editorial/list_article_check.html';
 			$data['assign_rank'] = 'assign_first';
 			break;
 		case 'assign_second': //指定复审
 			$where_arr = array('check_status' => 1, 'allot_status' => 0);
-			$view_html = 'list_article_check.html';
+			$view_html = 'editorial/list_article_check.html';
 			$data['assign_rank'] = 'assign_second';
 			break;
 		case 'select': //编委会定稿
 			$where_arr = array('check_status' => 2);
-			$view_html = 'list_article_finalize.html';
+			$view_html = 'edit/list_article_select.html';
 			break;
 		case 'doubt': //疑问稿件 -10=>初审疑问稿件 -11=>复审疑问稿件
 			$where_arr = array('check_status <' => '-9');
-			$view_html = 'list_article_doubt.html';
+			$view_html = 'editorial/list_article_doubt.html';
 			$data['assign_rank'] = 'doubt';
 			break;
 		}
@@ -71,7 +71,7 @@ class Edit extends MY_Controller {
 		//获取文章列表信息
 		$other_info = ', check_deadline'; //其他要获取的字段 以 "," 开头
 		$data['article'] = $this->index_model->get_list_article($where_arr, $offset, $per_page, $other_info);
-		$this->load->view('editorial/' . $view_html, $data);
+		$this->load->view($view_html, $data);
 	}
 
 	/*
@@ -101,10 +101,11 @@ class Edit extends MY_Controller {
 			//获取一审专家名字和意见 内连接 INNER JOIN
 			$data['suggest'] = $this->index_model->get_name_suggest(array('article_id' => $article_id));
 			break;
-		case 'finalize':
-			$view_html = 'editorial/finalize_article.html';
+		case 'select':
+			$view_html = 'edit/select_editorial.html';
 			//获取一审专家名字和意见 内连接 INNER JOIN
 			$data['suggest'] = $this->index_model->get_name_suggest(array('article_id' => $article_id));
+			$data['editorial'] = $this->index_model->get_user_list();
 			break;
 		case 'doubt':
 			$view_html = 'editorial/doubt_article.html';

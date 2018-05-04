@@ -151,6 +151,10 @@ a.showMinus{
 	border-radius: 50%;
 }
 
+.select_input{
+	margin-left: 30px;
+}
+
 /*提示字体颜色*/
 .hint{
 	color: #5bc0de;
