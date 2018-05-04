@@ -10,7 +10,7 @@ class Editorial extends MY_Controller {
 
 	function __construct() {
 		parent::__construct();
-		if ($this->session->userdata('identity') != 'editorial' || $this->session->userdata('identity') != 'edit') {
+		if ($this->session->userdata('identity') != 'editorial' && $this->session->userdata('identity') != 'edit') {
 			alert_msg('请以编委身份登录系统', 'go', site_url('home/login'));
 		}
 		$this->load->model('index_model');

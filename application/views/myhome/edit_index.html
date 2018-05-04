@@ -1,6 +1,6 @@
 <ul class="quick_btn">
     <li><a class="go_home" href="<?=base_url()?>" title="首页" target="_blank">首页</a></li>
-    <li><a class="contribute" href="<?=site_url('index/editorial/list_article/finalize')?>" onClick="go_cmdurl('编委会定稿',this);" title="在线投稿" target="content3">选派编委</a></li>
+    <li><a class="contribute" href="<?=site_url('index/edit/list_article/select')?>" onClick="go_cmdurl('选派编委',this);" title="选派编委" target="content3">选派编委</a></li>
 </ul>
 <div class="menu_top"></div>
 <div class="menu" id="TabPage3">
@@ -11,13 +11,13 @@
     </ul>
     <div id="left_menu_cnt">
         <ul id="dleft_tab1">
-            <li id="now34" class="Selected"><a class="Selected" href="<?=site_url('index/myhome/user_info')?>" onClick="go_cmdurl('个人信息',this);" target="content3" title="日志管理">个人信息</a></li>
+            <li id="now34" class="Selected"><a class="Selected" href="<?=site_url('index/myhome/user_info')?>" onClick="go_cmdurl('个人信息',this);" target="content3" title="个人信息">个人信息</a></li>
             <li id="now1d"><a href="<?=site_url('index/myhome/edit_password')?>" onClick="go_cmdurl('修改密码',this);" target="content3" title="修改密码">修改密码</a></li>
             <li id="now1b"><a href="<?=site_url('index/myhome/logout')?>" onClick="go_cmdurl('安全退出',this)" target="_self" title="安全退出">安全退出</a></li>
         </ul>
 
         <ul id="dleft_tab2" style="display:none;">
-            <li id="now1e"><a href="<?=site_url('index/editorial/list_article/select')?>" onClick="go_cmdurl('选派编委',this)" target="content3" title="选派编委">选派编委</a></li>
+            <li id="now1e"><a href="<?=site_url('index/edit/list_article/select')?>" onClick="go_cmdurl('选派编委',this)" target="content3" title="选派编委">选派编委</a></li>
             <li id="now53"><a href="<?=site_url('index/editorial/list_article/assign_first')?>" onClick="go_cmdurl('指定初审',this)" target="content3" title="指定初审">指定初审</a></li>
             <li id="now52"><a href="<?=site_url('index/editorial/list_article/assign_second')?>" onClick="go_cmdurl('指定复审',this)" target="content3" title="指定复审">指定复审</a></li>
             <li id="now26"><a href="<?=site_url('index/editorial/list_article/doubt')?>" onClick="go_cmdurl('疑问稿件',this)" target="content3" title="疑问稿件">疑问稿件<span id="sdraft_num"></span></a></li>
