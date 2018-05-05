@@ -112,7 +112,7 @@ class Index_model extends CI_model {
 		链接查询获取专家名字和审稿意见
 	*/
 	public function get_name_suggest($where_arr, $other_info = '') {
-		$get_info = 'content, realname, time, suggest.rank' . $other_info;
+		$get_info = 'suggest.user_id, content, realname, time, suggest.rank' . $other_info;
 		$status = $this->db->select($get_info)->join('user', 'suggest.user_id = user.user_id', 'inner')->order_by('rank ASC, time DESC')->get_where('suggest', $where_arr)->result_array();
 		return $status;
 	}

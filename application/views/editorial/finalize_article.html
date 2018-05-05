@@ -34,6 +34,7 @@
             <td><a href="<?=site_url('index/editorial/download/'.$article['article_id'])?>">点击下载附件</a></td>
         </tr>
         <?php foreach($suggest as $s):?>
+            <?php if($s['user_id'] == $this->session->userdata('user_id')){continue;}?>
         <tr>
             <td align="right">
                  <?=format_suggest_name($s['rank'], $s['realname'])?>
