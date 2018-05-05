@@ -1,6 +1,6 @@
 <ul class="quick_btn">
     <li><a class="go_home" href="<?=base_url()?>" title="首页" target="_blank">首页</a></li>
-    <li><a class="contribute" href="<?=site_url('index/editorial/list_article/finalize')?>" onClick="go_cmdurl('编委会定稿',this);" title="在线定稿" target="content3">在线定稿</a></li>
+    <li><a class="contribute" href="<?=site_url('index/editorial/list_article/finalize')?>" onClick="go_cmdurl('编委会定稿',this);border_left('TabPage2','left_tab2');" title="在线定稿" target="content3">在线定稿</a></li>
 </ul>
 <div class="menu_top"></div>
 <div class="menu" id="TabPage3">
@@ -17,9 +17,9 @@
         </ul>
 
         <ul id="dleft_tab2" style="display:none;">
+            <li id="now1e"><a href="<?=site_url('index/editorial/list_article/finalize')?>" onClick="go_cmdurl('编委会定稿',this)" target="content3" title="编委会定稿">编委会定稿</a></li>
             <li id="now53"><a href="<?=site_url('index/editorial/list_article/assign_first')?>" onClick="go_cmdurl('指定初审',this)" target="content3" title="指定初审">指定初审</a></li>
             <li id="now52"><a href="<?=site_url('index/editorial/list_article/assign_second')?>" onClick="go_cmdurl('指定复审',this)" target="content3" title="指定复审">指定复审</a></li>
-            <li id="now1e"><a href="<?=site_url('index/editorial/list_article/finalize')?>" onClick="go_cmdurl('编委会定稿',this)" target="content3" title="编委会定稿">编委会定稿</a></li>
             <li id="now26"><a href="<?=site_url('index/editorial/list_article/doubt')?>" onClick="go_cmdurl('疑问稿件',this)" target="content3" title="疑问稿件">疑问稿件<span id="sdraft_num"></span></a></li>
         </ul>
 

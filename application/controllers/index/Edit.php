@@ -122,21 +122,34 @@ class Edit extends MY_Controller {
 		$this->load->view($view_html, $data);
 	}
 
+	//选派编委定稿
 	public function select_editorial($article_id) {
 		$user_id = $this->input->post('editorial');
 		if (!is_numeric($user_id) || !is_numeric($article_id)) {
 			alert_msg('选派无效，请重新选择！');
 		}
-		$article = $this->index_model->get_info_article(array('article_id' => $article_id));
+
+		//查看稿件是否存在
+		$article = $this->index_model->get_info_article(array('article_id' => $article_id), ', allot_status');
 		if (empty($article) || $article[0]['allot_status'] == 1) {
 			alert_msg('选派失败，该稿件不存在或已经被选派！');
 		}
+
+		//选派专家
 		$data = array(
 			'user_id' => $user_id,
 			'article_id' => $article_id,
 			'rank' => $article[0]['check_status'],
 		);
 		$status = $this->db->insert('suggest', $data);
+
+		//将稿件设置为选派状态
+		if ($status) {
+			$this->db->update('article', array('allot_status' => 1), array('article_id' => $article_id));
+			alert_msg('选派成功！', 'back2');
+		} else {
+			alert_msg('选派失败，请重试！');
+		}
 	}
 
 	/*
