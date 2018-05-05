@@ -479,6 +479,92 @@ class Home extends CI_Controller {
 		$this->_get_type($array);
 	}
 
+	//专家不登录的状态下审核
+	public function check($action, $article_id, $user_id, $token) {
+		if (!is_numeric($article_id) || !is_numeric($user_id)) {
+			alert_msg('该稿件不存在！', 'close');
+		}
+
+		//判断文章是否存在
+		$article = $this->index_model->get_article_info(array('article_id' => $article_id, 'check_token' => $token));
+		if (empty($article)) {
+			$array = array();
+		}
+
+		//查看 OR 执行审核操作
+		if ($action == 'see') {
+			//查看操作
+			$data = array(
+				'article' => $article[0],
+				'specialist' => $user_id,
+				'token' => $token,
+			);
+			$this->load->view('index/check_article.html', $data);
+		} else if ($action == 'check') {
+			//判断审核信息是否正确 防止越权
+			$suggest = $this->index_model->get_suggest_info(array('user_id' => $user_id, 'article_id' => $article_id, 'rank' => $article[0]['check_status']));
+			if (empty($suggest)) {
+				$array = array(
+					'code' => 400,
+					'message' => '审核信息错误，请核对链接是否正确！',
+				);
+				$this->_get_type($array);
+			}
+
+			if (!empty($suggest[0]['status'])) {
+				$array = array(
+					'code' => 400,
+					'message' => '您的审核意见已提交，请勿重复审核！',
+				);
+				$this->_get_type($array);
+			}
+			//执行审核
+			$data = array(
+				'content' => $this->input->post('content'),
+				'status' => $this->input->post('status'),
+				'time' => time(),
+			);
+
+			//判断连个专家意见是否一致 如果一致同意
+			$other_suggest = $this->index_model->get_suggest_info(array('article_id' => $article_id, 'user_id !=' => $user_id, 'rank' => $article[0]['check_status']));
+			if (!empty($other_suggest[0]['status'])) {
+				if ($data['status'] == $other_suggest[0]['status'] && $data['status'] == 1) {
+					$check_status = array('check_status' => ($article[0]['check_status'] + 1));
+				} elseif ($data['status'] != $other_suggest[0]['status']) {
+					$check_status = array('check_status' => (-$article[0]['check_status'] - 10));
+				} else {
+					$check_status = array('check_status' => -1);
+				}
+				$check_status['check_token'] = ''; //两个专家完成审核后将审核票据清空
+				$status = $this->db->update('article', $check_status, array('article_id' => $article_id));
+
+				//判断稿件状态是否自动修改成功 否则是否审核失败不继续向下执行插入审核意见操作
+				if (!$status) {
+					$array = array(
+						'code' => 400,
+						'message' => '提交失败，请稍后重试！',
+					);
+				}
+			}
+
+			//执行提交意见操作
+			if ($this->db->update('suggest', $data, array('sug_id' => $suggest[0]['sug_id']))) {
+				$array = array(
+					'code' => 200,
+					'message' => '审核意见已经提交，感谢您参与审核！',
+				);
+			} else {
+				$array = array(
+					'code' => 400,
+					'message' => '审核意见提交失败，请稍后重试！',
+				);
+			}
+			$this->_get_type($array);
+		} else {
+			alert_msg('您访问的内容不存在！', 'close');
+		}
+	}
+
 	/*
 		下载稿件
 	*/

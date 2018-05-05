@@ -39,10 +39,11 @@ th,td {
 }
 .textarea{
 	resize:none;
-	width: 500px;
+	width: 850px;
 	height: 171px;
 	padding: 5px;
 	border-radius: 5px;
+	border: 1px solid #ccc;
 }
 img{
 	border:none; 

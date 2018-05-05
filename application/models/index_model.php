@@ -35,7 +35,7 @@ class Index_model extends CI_model {
 
 	//获取稿件内容
 	public function get_article_info($where_arr) {
-		$get_info = 'article_id, title, author, abstract, keywords, create_time, use_time, read_total';
+		$get_info = 'article_id, title, author, abstract, keywords, create_time, use_time, read_total, check_status';
 		$status = $this->db->select($get_info)->get_where('article', $where_arr)->result_array();
 		return $status;
 	}
