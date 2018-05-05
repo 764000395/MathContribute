@@ -50,7 +50,11 @@ class Editorial extends MY_Controller {
 			break;
 		case 'finalize': //编委会定稿
 			$where_arr = array('check_status' => 2);
+			$data['article'] = $this->index_model->get_check_article(array(
+				'suggest.user_id' => $this->session->userdata('user_id'), 'status is null' => null));
+			$data['link'] = '';
 			$view_html = 'list_article_finalize.html';
+			$this->load->view('editorial/' . $view_html, $data);return;
 			break;
 		case 'doubt': //疑问稿件 -10=>初审疑问稿件 -11=>复审疑问稿件
 			$where_arr = array('check_status <' => '-9');
