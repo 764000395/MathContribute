@@ -47,14 +47,19 @@
     </table>
     <hr/>
     <table class="table">
-        <form action="<?=site_url()?>" method="post">
+        <form action="<?=site_url('admin/admin/edit/select_editorial/'.$article['article_id'])?>" method="post">
         <?php foreach($editorial as $k=>$e):?>
             <?=$k%4==0?'<tr>':''?>
                 <td>
-                    <input type="radio" name="editorial" value="<?=$e['user_id']?>" class="select_input"><?=$e['realname']?>
+                    <input class="checkbox_input" type="radio" name="editorial" value="<?=$e['user_id']?>" ><?=$e['realname']?>
                 </td>
             <?=($k+1)%4==0?'</tr>':''?>
         <?php endforeach;?>
+        <tr>
+            <td colspan="4" align="center">
+                <input type="submit" value="选派专家" class="input_button">
+            </td>
+        </tr>
         </form>
     </table>
 </body>

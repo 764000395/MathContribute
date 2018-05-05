@@ -105,7 +105,7 @@ class Edit extends MY_Controller {
 			$view_html = 'edit/select_editorial.html';
 			//获取一审专家名字和意见 内连接 INNER JOIN
 			$data['suggest'] = $this->index_model->get_name_suggest(array('article_id' => $article_id));
-			$data['editorial'] = $this->index_model->get_user_list();
+			$data['editorial'] = $this->index_model->get_user_list(array('identity' => 'editorial'));
 			break;
 		case 'doubt':
 			$view_html = 'editorial/doubt_article.html';
@@ -120,6 +120,23 @@ class Edit extends MY_Controller {
 		}
 
 		$this->load->view($view_html, $data);
+	}
+
+	public function select_editorial($article_id) {
+		$user_id = $this->input->post('editorial');
+		if (!is_numeric($user_id) || !is_numeric($article_id)) {
+			alert_msg('选派无效，请重新选择！');
+		}
+		$article = $this->index_model->get_info_article(array('article_id' => $article_id));
+		if (empty($article) || $article[0]['allot_status'] == 1) {
+			alert_msg('选派失败，该稿件不存在或已经被选派！');
+		}
+		$data = array(
+			'user_id' => $user_id,
+			'article_id' => $article_id,
+			'rank' => $article[0]['check_status'],
+		);
+		$status = $this->db->insert('suggest', $data);
 	}
 
 	/*

@@ -72,6 +72,14 @@ class Index_model extends CI_model {
 	}
 
 	/*
+		获取用户列表
+	 */
+	public function get_user_list($where_arr) {
+		$get_info = 'user_id, realname';
+		$status = $this->db->select($get_info)->get_where('user', $where_arr)->result_array();
+		return $status;
+	}
+	/*
 		用户投稿列表获取
 		根据status状态
 	 */
