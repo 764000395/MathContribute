@@ -259,6 +259,9 @@ class Editorial extends MY_Controller {
 		if (empty($article_status)) {
 			alert('该稿件不存在');
 		}
+		if ($article_status[0]['check_status'] >= -10) {
+			alert_msg('您已判定该稿件，请勿重复操作！');
+		}
 		//-10-$article_status[0]['check_status'] => 稿件当前状态
 		if ($type == 'pass') {
 			//-10-$article_status[0]['check_status']+1 => 进入下一个状态
@@ -274,7 +277,7 @@ class Editorial extends MY_Controller {
 		//对article表执行修改操作
 		$status = $this->db->update('article', $data, array('article_id' => $article_id));
 		if ($status) {
-			alert_msg('操作成功！');
+			alert_msg('操作成功！', 'back2');
 		} else {
 			alert_msg('操作失败，请重试！');
 		}
