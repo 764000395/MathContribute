@@ -37,7 +37,11 @@
                 </tr>
                 <tr>
                     <td align="right">稿件附件：</td>
-                    <td><a href="<?=site_url('home/download/'.$article['article_id'].'/'.$token)?>">点击下载附件</a></td>
+                    <td>
+                        <a href="<?=site_url('home/download/'.$article['article_id'].'/'.$token)?>">
+                        点击下载附件
+                        </a>
+                    </td>
                 </tr>
                 <tr>
                 	<td colspan="2"></td>
@@ -46,7 +50,7 @@
                 <form id="myform" method="post">
                 <tr>
                 	<td align="right">审稿意见：</td>
-                	<td><textarea name="suggest" required="required" placeholder="请填写您的审稿意见" class="textarea"></textarea></td>
+                	<td><textarea name="content" required="required" placeholder="请填写您的审稿意见" class="textarea"></textarea></td>
                 </tr>
                 <input type="hidden" name="status">
                 <tr>
@@ -71,6 +75,15 @@
 		/* Act on the event */
 		event.preventDefault();
 		$("input[name='status']").val($(this).attr('status'));
+        if($('textarea').val().length <= 0){
+            alert('请输入审核意见！');
+            $('textarea').focus();
+            return;
+        }
+
+        var the_btn = $(this);
+        var the_btn_val = the_btn.val();
+        the_btn.html('正在提交...').css('background', 'gray');
 		$.post("<?=site_url('home/check/check/'.$article['article_id'].'/'.$specialist.'/'.$token)?>", $("#myform").serialize(), function(data, textStatus, xhr) {
 			/*optional stuff to do after success */
 			if(data.code == 200){
@@ -78,6 +91,7 @@
 				location.href='<?=base_url()?>';
 			}else{
 				alert(data.message);
+                the_btn.html(the_btn_val).css('background', '#3B96CB');
 			}
 		}, 'json');
 	});

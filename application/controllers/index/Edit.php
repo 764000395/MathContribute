@@ -48,8 +48,8 @@ class Edit extends MY_Controller {
 			$view_html = 'editorial/list_article_check.html';
 			$data['assign_rank'] = 'assign_second';
 			break;
-		case 'select': //编委会定稿
-			$where_arr = array('check_status' => 2);
+		case 'select': //选派编委定稿
+			$where_arr = array('check_status' => 2, 'allot_status' => 0);
 			$view_html = 'edit/list_article_select.html';
 			break;
 		case 'doubt': //疑问稿件 -10=>初审疑问稿件 -11=>复审疑问稿件

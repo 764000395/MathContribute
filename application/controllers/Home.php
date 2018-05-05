@@ -488,7 +488,7 @@ class Home extends CI_Controller {
 		//判断文章是否存在
 		$article = $this->index_model->get_article_info(array('article_id' => $article_id, 'check_token' => $token));
 		if (empty($article)) {
-			$array = array();
+			alert_msg('你的审核意见已经提交，请勿重复审核！');
 		}
 
 		//查看 OR 执行审核操作
@@ -536,6 +536,7 @@ class Home extends CI_Controller {
 					$check_status = array('check_status' => -1);
 				}
 				$check_status['check_token'] = ''; //两个专家完成审核后将审核票据清空
+				$check_status['allot_status'] = 0; //将该稿件被指定状态设为0 即未指定审核
 				$status = $this->db->update('article', $check_status, array('article_id' => $article_id));
 
 				//判断稿件状态是否自动修改成功 否则是否审核失败不继续向下执行插入审核意见操作
@@ -575,19 +576,19 @@ class Home extends CI_Controller {
 		}
 		$where_arr = array('article_id' => $article_id);
 		//判断是否从用户中心发来的下载请求
+		$authority = true;
 		if ($action == 'authority') {
 			$where_arr['user_id'] = $this->session->userdata('user_id');
 			$authority = false; //与check_status相或，取消判断稿件状态
-		} else {
-			$authority = true;
 		}
 
 		//判断稿件是否存在
-		$article = $this->db->select('title, check_status, attachment_url')->get_where('article', $where_arr)->result_array();
+		$article = $this->db->select('title, check_status, attachment_url, check_token')->get_where('article', $where_arr)->result_array();
 		if (empty($article)) {
 			alert_msg('无法完成下载！', 'close');
 		}
 
+		$authority = $article[0]['check_token'] == $action ? false : true;
 		//如果用户不是专家或者编委，不能下载未经过编委会审核的稿件
 		//0=未审核 1=初审完成 2=二审完成 3=编委会定稿完成 -1=拒稿
 		$identity = $this->session->userdata('identity');
