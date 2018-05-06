@@ -66,7 +66,7 @@ class Index_model extends CI_model {
 		用户个人信息获取
 	 */
 	public function show_user_info($user_id) {
-		$get_info = 'realname, sex, major, research_direction, address, phone, postcode, organization, qq, edu_background';
+		$get_info = 'realname, sex, major, research_direction, address, phone, postcode, organization, qq, edu_background, email, register_time';
 		$status = $this->db->select($get_info)->get_where('user', array('user_id' => $user_id))->result_array();
 		return $status;
 	}
@@ -91,10 +91,18 @@ class Index_model extends CI_model {
 	}
 
 	/*
+		编辑按季节查稿 获取稿件列表
+	 */
+	public function get_list_article_season($where_arr, $offset, $per_page = 10) {
+		$status = $this->db->order_by('use_time DESC, check_status DESC, create_time DESC')->limit($per_page, $offset)->get_where('article', $where_arr)->result_array();
+		return $status;
+	}
+
+	/*
 		获取稿件信息
 	 */
 	public function get_info_article($where_arr, $other_info = '') {
-		$get_info = 'article_id, title, author, keywords, create_time, check_status, abstract, attachment_url, check_token' . $other_info;
+		$get_info = 'article_id, user_id, title, author, keywords, create_time, check_status, abstract, attachment_url, check_token' . $other_info;
 		$status = $this->db->select($get_info)->get_where('article', $where_arr)->result_array();
 		return $status;
 	}

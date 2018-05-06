@@ -156,12 +156,77 @@ class Edit extends MY_Controller {
 		查看作者信息
 	 */
 	public function see_user($user_id) {
-		$user = $this->index_model->show_user_info($this->session->userdata('user_id'));
+		$user = $this->index_model->show_user_info($user_id);
 		if (empty($user)) {
 			alert_msg('该用户不存在！');
 		}
 		$data = $user[0];
 		$this->load->view('edit/user_info.html', $data);
+	}
+
+	//设置稿件目次
+	public function list_article_season($type, $offset = 0) {
+		switch ($type) {
+		case 'all': //待录入稿件
+			$where_arr = array();
+			$data['article'] = $this->db->order_by('use_time DESC, check_status DESC, create_time DESC')->limit(10, $offset)->get_where('article', array('season is null' => null))->result_array();
+			$view_html = 'edit/list_article_season_set.html';
+			break;
+		case 'now': //当期目录
+			$where_arr = array('use_time >=' => get_season_time(time(), 'start'), 'use_time <=' => get_season_time(time(), 'end'), 'check_status' => 3);
+			$view_html = 'edit/list_article_season.html';
+			break;
+		case 'next':
+			$where_arr = array('season' => 'next');
+			$view_html = 'edit/list_article_season_set.html';
+			break;
+		case 'latest_use': //最新录用
+			$where_arr = array('check_status' => 3);
+			$view_html = 'edit/list_article_season.html';
+			break;
+		default:
+			# code...
+			break;
+		}
+
+		if ($type != 'all') {
+			$data['article'] = $this->index_model->get_list_article_season($where_arr, $offset);
+		}
+
+		//分页
+		$page_url = site_url('index/edit/list_article_season/' . $type);
+		$total_rows = $this->db->where($where_arr)->count_all_results('article');
+		$offset_uri_segment = 5;
+		$per_page = 10;
+		$this->load->library('myclass');
+		$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
+
+		$this->load->view($view_html, $data);
+	}
+
+	//稿件目次设定操作
+	public function set_season($action, $article_id) {
+		if (!is_numeric($article_id)) {
+			alert_msg('该稿件不存在！');
+		}
+		if ($action == 'set_next') {
+			//设定下期目录
+			$data = array('season' => 'next');
+		} else if ($action == 'remove') {
+			//移除下期目录
+			$data = array('season' => null);
+		} else {
+			alert_msg('您访问的信息不存在！', 'back2');
+		}
+
+		//执行操作
+		$status = $this->db->update('article', $data, array('article_id' => $article_id));
+		//echo $this->db->last_query();die;
+		if ($status) {
+			alert_msg('操作成功！');
+		} else {
+			alert_msg('操作失败，请稍后重试');
+		}
 	}
 
 }

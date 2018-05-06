@@ -12,9 +12,19 @@
 <body>
     <table class="table">
         <tr>
-            <td align="right">稿件题目：</td>
+            <td align="right">稿件标题：</td>
             <td>
                 <?=$article['title']?>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">稿件作者：<br><br>
+                <a href="<?=site_url('index/edit/see_user/'.$article['user_id'])?>">
+                    <?=$this->session->userdata('identity') == 'edit'?'查看投稿作者信息':''?>
+                </a>
+            </td>
+            <td>
+                <?=$article['author']?>
             </td>
         </tr>
         <tr>
@@ -36,7 +46,12 @@
         <?php foreach($suggest as $s):?>
         <tr>
             <td align="right">
-                <?=format_suggest_name($s['rank'], $s['realname'])?>
+                
+                <?=format_suggest_name($s['rank'], $s['realname'])?><br><br>
+                <a href="<?=site_url('index/edit/see_user/'.$s['user_id'])?>">
+                    <?=$this->session->userdata('identity')=='edit'?'查看用户信息':''?>    
+                </a>
+                
             </td>
             <td>
                 <?=$s['content']?>
@@ -50,8 +65,12 @@
 
 </html>
 <script>
-$("input[type='submit']").click(function(event) {
-    var url = "<?=site_url('index/editorial/doubt_article/'.$article['article_id'])?>"+"/"+$(this).attr('status');
-    location.href = url;
-});
+
+function go(id){
+    var identity = "<?=$this->session->userdata('identity')?>"
+    if(identity == 'edit'){
+        location.href = '<?site_url("home/edit/see_user/")?>'+id;
+    }
+}
+
 </script>
