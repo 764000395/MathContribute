@@ -18,6 +18,10 @@
             </td>
         </tr>
         <tr>
+            <td align="right">作者：</td>
+            <td><?=$article['author']?></td>
+        </tr>
+        <tr>
             <td align="right">稿件关键字：</td>
             <td>
                 <?=$article['keywords']?>
@@ -45,11 +49,11 @@
             </td>
         </tr>
         <?php endforeach;?>
-        <form id="myform">
+        <form id="myform" method="post">
             <tr>
                 <td align="right">编委意见：</td>
                 <td>
-                    <textarea name="suggest" required="required" placeholder="请填写您的审稿意见" class="textarea"></textarea>
+                    <textarea name="content" placeholder="请填写您的审稿意见" class="textarea" required></textarea>
                 </td>
             </tr>
             <input type="hidden" name="status">
@@ -71,6 +75,10 @@
 <script>
 $("input[type='submit']").click(function(event) {
     event.preventDefault();
+    if($('textarea').val().length <=0 ){
+        alert('请输入您的审核意见！');
+        return;
+    }
     var type = $(this).attr('status');
     $.post("<?=site_url('index/editorial/finalize/'.$article['article_id'])?>"+"/"+type, $('#myform').serialize(), function(data, textStatus, xhr) {
         if(data.code == 200){

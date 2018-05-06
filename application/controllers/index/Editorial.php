@@ -49,9 +49,8 @@ class Editorial extends MY_Controller {
 			$data['assign_rank'] = 'assign_second';
 			break;
 		case 'finalize': //编委会定稿
-			$where_arr = array('check_status' => 2);
 			$data['article'] = $this->index_model->get_check_article(array(
-				'suggest.user_id' => $this->session->userdata('user_id'), 'status is null' => null));
+				'suggest.user_id' => $this->session->userdata('user_id'), 'status is null' => null, 'check_status' => 2));
 			$data['link'] = '';
 			$view_html = 'list_article_finalize.html';
 			$this->load->view('editorial/' . $view_html, $data);return;
@@ -154,11 +153,13 @@ class Editorial extends MY_Controller {
 		//判断稿件是否处于正在审核状态
 		$article['check_status'] >= 0 && $article['check_status'] <= 2 ? '' : alert_msg('该稿件已经通过专家审核');
 
+		$check_token = md5(time() . mt_rand(1000, 9999)); //专家不登录检查稿件凭据
+
 		//执行指定专家审核
-		$status1 = $this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $set_arr[0], 'rank' => $article['check_status']));
-		$status2 = $this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $set_arr[1], 'rank' => $article['check_status']));
+		$status1 = $this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $set_arr[0], 'rank' => $article['check_status'], 'token' => $check_token));
+		$status2 = $this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $set_arr[1], 'rank' => $article['check_status'], 'token' => $check_token));
 		if ($status1 && $status2) {
-			$check_token = md5(time() . mt_rand(1000, 9999)); //专家不登录检查稿件凭据
+
 			$this->db->update('article', array('allot_status' => 1, 'check_token' => $check_token), array('article_id' => $article_id));
 
 			//给指定审稿的两个专家发邮件提醒专家审核
@@ -167,7 +168,7 @@ class Editorial extends MY_Controller {
 			$subject = '数学季刊投稿系统提醒您审核稿件';
 			$to1 = $specialist1[0]['email']; //专家1邮箱
 			$to2 = $specialist2[0]['email']; //专家2邮箱
-			echo $to1 . '<br>' . $to2;
+			//echo $to1 . '<br>' . $to2;
 			$begin = '尊敬的';
 			$end_b = '专家您好，请您访问 ';
 			$end_e = ' 或登录系统来审核稿件!';
@@ -195,38 +196,40 @@ class Editorial extends MY_Controller {
 			);
 			echo json_encode($array, JSON_UNESCAPED_UNICODE);exit;
 		}
-		$suggest = $this->input->post('suggest');
+		$suggest = $this->input->post('content');
 		$isset_finalize = $this->db->select('sug_id')->get_where('suggest', array('article_id' => $article_id, 'user_id' => $this->session->userdata('user_id')))->result_array();
 		if ($type == 'use') {
 			//合格——录用
 
 			//判断返修前后是否为同一个编委会成员提交的审核，若是=》修改表。否则插入审核信息
-			if (empty($isset_finalize)) {
-				$this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $this->session->userdata('user_id'), 'content' => $suggest, 'rank' => 3, 'status' => 1, 'time' => time()));
-			} else {
-				$this->db->update('suggest', array('content' => $suggest, 'rank' => 3, 'status' => 1, 'time' => time()), array('sug_id' => $isset_finalize[0]['sug_id']));
-			}
+			// if (empty($isset_finalize)) {
+			// 	$this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $this->session->userdata('user_id'), 'content' => $suggest, 'rank' => 3, 'status' => 1, 'time' => time()));
+			// } else {
+			// 	$this->db->update('suggest', array('content' => $suggest, 'rank' => 3, 'status' => 1, 'time' => time()), array('sug_id' => $isset_finalize[0]['sug_id']));
+			// }
 
+			$this->db->update('suggest', array('content' => $suggest, 'rank' => 3, 'status' => 1, 'time' => time()), array('sug_id' => $isset_finalize[0]['sug_id']));
 			//将稿件的审核进度设置为编委会审核完成，即该篇稿件已被录用
 			$status = $this->db->update('article', array('check_status' => 3, 'use_time' => time()), array('article_id' => $article_id));
 		} else if ($type == 'edit') {
 			//不合格——返修
-			if (empty($isset_finalize)) {
-				$this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $this->session->userdata('user_id'), 'content' => $suggest, 'rank' => -4, 'status' => 0, 'time' => time()));
-			} else {
-				$this->db->update('suggest', array('content' => $suggest, 'rank' => -4, 'status' => 0, 'time' => time()), array('sug_id' => $isset_finalize[0]['sug_id']));
-			}
-
+			// if (empty($isset_finalize)) {
+			// 	$this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $this->session->userdata('user_id'), 'content' => $suggest, 'rank' => -4, 'status' => 0, 'time' => time()));
+			// } else {
+			// 	$this->db->update('suggest', array('content' => $suggest, 'rank' => -4, 'status' => 0, 'time' => time()), array('sug_id' => $isset_finalize[0]['sug_id']));
+			// }
+			$this->db->update('suggest', array('content' => $suggest, 'rank' => 2, 'time' => time()), array('sug_id' => $isset_finalize[0]['sug_id']));
 			//将稿件的审核进度设置为编委会要求返修，进度状态码为-4
 			$status = $this->db->update('article', array('check_status' => -4), array('article_id' => $article_id));
 		} else {
 			//不合格——拒稿
-			if (empty($isset_finalize)) {
-				$this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $this->session->userdata('user_id'), 'content' => $suggest, 'rank' => -1, 'status' => 0, 'time' => time()));
-			} else {
-				$this->db->update('suggest', array('content' => $suggest, 'rank' => -1, 'status' => 0, 'time' => time()), array('sug_id' => $isset_finalize[0]['sug_id']));
-			}
+			// if (empty($isset_finalize)) {
+			// 	$this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $this->session->userdata('user_id'), 'content' => $suggest, 'rank' => -1, 'status' => 0, 'time' => time()));
+			// } else {
+			// 	$this->db->update('suggest', array('content' => $suggest, 'rank' => -1, 'status' => 0, 'time' => time()), array('sug_id' => $isset_finalize[0]['sug_id']));
+			// }
 
+			$this->db->update('suggest', array('content' => $suggest, 'rank' => -1, 'status' => 0, 'time' => time()), array('sug_id' => $isset_finalize[0]['sug_id']));
 			//将稿件的审核进度设置为编委拒稿，进度状态码为-1
 			$status = $this->db->update('article', array('check_status' => -1), array('article_id' => $article_id));
 		}
@@ -259,7 +262,7 @@ class Editorial extends MY_Controller {
 		if (empty($article_status)) {
 			alert('该稿件不存在');
 		}
-		if ($article_status[0]['check_status'] >= -10) {
+		if ($article_status[0]['check_status'] > -10) {
 			alert_msg('您已判定该稿件，请勿重复操作！');
 		}
 		//-10-$article_status[0]['check_status'] => 稿件当前状态

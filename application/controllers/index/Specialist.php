@@ -62,21 +62,24 @@ class Specialist extends MY_Controller {
 	 */
 	public function check($article_id, $type) {
 		if (!is_numeric($article_id)) {
-			alert_msg('该稿件不存在！');
+			get_json(400, '该稿件不存在！');
 		}
 
 		//获取稿件的审核状态 并判断该稿件是否存在 方便下通过article_id、user_id、rank查找唯一稿件
 		$article = $this->index_model->get_info_article(array('article_id' => $article_id));
 		if (empty($article)) {
-			alert_msg('该稿件不存在！');
+			get_json(400, '该稿件不存在！');
 		}
+
+		//一个check_token确定一篇文章的两个审核专家
 		$user_id = $this->session->userdata('user_id');
-		$where_arr = array('article_id' => $article_id, 'user_id' => $user_id, 'rank' => $article[0]['check_status']);
+		$where_arr = array('article_id' => $article_id, 'user_id' => $user_id, 'token' => $article[0]['check_token']);
 
 		//判断是否是被指定的该稿件的审稿专家
 		$suggest = $this->index_model->get_suggest_info($where_arr);
+		//print_r($suggest);die;
 		if (empty($suggest)) {
-			alert_msg('权限不足，不能审核该稿件');
+			get_json(400, '你已经审核过该稿件！');
 		}
 
 		//执行审稿操作
@@ -85,12 +88,13 @@ class Specialist extends MY_Controller {
 			'time' => time(),
 		);
 		$data['status'] = $type == 'pass' ? 1 : 0;
+		$check_code = $data['status'];
 		$status = $this->db->update('suggest', $data, array('sug_id' => $suggest[0]['sug_id']));
 		if ($status) {
 			//判断两个专家的审核意见，如果都通过审核，则稿件进入下一轮审核。如果都不通过审核，直接拒稿
 			//若两专家审核意见不一致，交由编委会决定是拒稿，还是反修。
-			$other_suggest = $this->index_model->get_suggest_info(array('article_id' => $article_id, 'rank' => $article[0]['check_status'], 'user_id !=' => $user_id));
-			if (is_numeric($other_suggest[0]['status'])) {
+			$other_suggest = $this->index_model->get_suggest_info(array('token' => $article[0]['check_token'], 'user_id !=' => $user_id));
+			if (!empty($other_suggest) && is_numeric($other_suggest[0]['status'])) {
 				if ($other_suggest[0]['status'] == $check_code) {
 					if ($check_code == 1) {
 						//通过审核，通过修改审进度状态码，使该稿件进入下一轮审核
@@ -110,9 +114,9 @@ class Specialist extends MY_Controller {
 
 				$this->db->update('article', $article_data, array('article_id' => $article_id));
 			}
-			alert_msg('您的审核意见已提交，感谢您参与审核！');
+			get_json(200, '您的审核意见已提交，感谢您参与审核！');
 		} else {
-			alert_msg('审核失败，请检查您的网络！');
+			get_json(400, '审核失败，请检查您的网络！');
 		}
 	}
 

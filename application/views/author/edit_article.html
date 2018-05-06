@@ -22,7 +22,7 @@
             <tr>
                 <td align="right">作者姓名：</td>
                 <td>
-                    <input type="text" class="input" name="title" value="<?=$article['author']?>" required="required">
+                    <input type="text" class="input" name="author" value="<?=$article['author']?>" required="required">
                 </td>
             </tr>
             <tr>
@@ -47,30 +47,15 @@
                 <td colspan="2" align="center"><input type="submit" value="修改稿件" class="input_button"></td>
             </tr>
         </form>
+        <?php foreach($suggest as $s):?>
         <tr>
-            <td align="right">专家初审意见 1：</td>
-            <td></td>
+            <td align="right"><?=format_suggest_name($s['rank'], $s['realname'])?></td>
+            <td>
+                <?=$s['content']?>
+                <br/><br/><span class="hint">审核时间：<?=date('Y-m-d H:i:s', $s['time'])?><span>
+            </td>
         </tr>
-        <tr>
-            <td align="right">专家初审意见 2：</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td align="right">专家复审意见 1：</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td align="right">专家复审意见 2：</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td align="right">编委审核意见 1：</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td align="right">编委审核意见 2：</td>
-            <td></td>
-        </tr>
+        <?php endforeach;?>
     </table>
 </body>
 

@@ -94,7 +94,7 @@ class Index_model extends CI_model {
 		获取稿件信息
 	 */
 	public function get_info_article($where_arr, $other_info = '') {
-		$get_info = 'article_id, title, author, keywords, create_time, check_status, abstract, attachment_url' . $other_info;
+		$get_info = 'article_id, title, author, keywords, create_time, check_status, abstract, attachment_url, check_token' . $other_info;
 		$status = $this->db->select($get_info)->get_where('article', $where_arr)->result_array();
 		return $status;
 	}
@@ -113,7 +113,7 @@ class Index_model extends CI_model {
 	*/
 	public function get_name_suggest($where_arr, $other_info = '') {
 		$get_info = 'suggest.user_id, content, realname, time, suggest.rank' . $other_info;
-		$status = $this->db->select($get_info)->join('user', 'suggest.user_id = user.user_id', 'inner')->order_by('rank ASC, time DESC')->get_where('suggest', $where_arr)->result_array();
+		$status = $this->db->select($get_info)->join('user', 'suggest.user_id = user.user_id', 'inner')->order_by('time ASC')->get_where('suggest', $where_arr)->result_array();
 		return $status;
 	}
 

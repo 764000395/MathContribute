@@ -8,7 +8,6 @@
     <link href="/style/author/css/public.css" rel="stylesheet">
     <script type="text/javascript" src="<?=base_url('style/index')?>/js/jquery-3.2.1.min.js"></script>
 </head>
-<?var_dump($article)?>
 <body>
     <table class="table">
         <tr>
@@ -16,6 +15,10 @@
             <td>
                 <?=$article['title']?>
             </td>
+        </tr>
+        <tr>
+            <td align="right">作者</td>
+            <td><?=$article['author']?></td>
         </tr>
         <tr>
             <td align="right">稿件关键字：</td>
@@ -34,11 +37,11 @@
             <td><a href="<?=site_url('index/specialist/download/'.$article['article_id'])?>">点击下载附件</a></td>
         </tr>
     
-        <form id="myform">
+        <form id="myform" method="post">
             <tr>
                 <td align="right">审稿意见：</td>
                 <td>
-                    <textarea name="suggest" required="required" placeholder="请填写您的审稿意见" class="textarea"></textarea>
+                    <textarea name="content" placeholder="请填写您的审稿意见" class="textarea" required></textarea>
                 </td>
             </tr>
             <input type="hidden" name="status">
@@ -59,8 +62,22 @@
 <script>
 $("input[type='submit']").click(function(event) {
     event.preventDefault();
+    if($('textarea').val().length <= 0){
+        alert('请输入您的审核意见！');
+        return;
+    }
     var type = $(this).attr('status');
     $(this).css('background', 'gray').val('正在提交...');
-    location.href = "<?=site_url('index/specialist/check/'.$article['article_id'])?>"+""+type;
+    var the_btn = $(this);
+    $.post("<?=site_url('index/specialist/check/'.$article['article_id'])?>"+"/"+type, $('#myform').serialize(), function(data, textStatus, xhr) {
+        /*optional stuff to do after success */
+        if(data.code == 200){
+            the_btn.val('已提交');
+            alert(data.message);
+            window.history.go(-1);
+        }else{
+            alert(data.message);
+        }
+    }, 'json');
 });
 </script>

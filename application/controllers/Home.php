@@ -502,7 +502,7 @@ class Home extends CI_Controller {
 			$this->load->view('index/check_article.html', $data);
 		} else if ($action == 'check') {
 			//判断审核信息是否正确 防止越权
-			$suggest = $this->index_model->get_suggest_info(array('user_id' => $user_id, 'article_id' => $article_id, 'rank' => $article[0]['check_status']));
+			$suggest = $this->index_model->get_suggest_info(array('user_id' => $user_id, 'article_id' => $article_id, 'token' => $token));
 			if (empty($suggest)) {
 				$array = array(
 					'code' => 400,
@@ -526,7 +526,7 @@ class Home extends CI_Controller {
 			);
 
 			//判断连个专家意见是否一致 如果一致同意
-			$other_suggest = $this->index_model->get_suggest_info(array('article_id' => $article_id, 'user_id !=' => $user_id, 'rank' => $article[0]['check_status']));
+			$other_suggest = $this->index_model->get_suggest_info(array('article_id' => $article_id, 'user_id !=' => $user_id, 'token' => $token));
 			if (!empty($other_suggest[0]['status'])) {
 				if ($data['status'] == $other_suggest[0]['status'] && $data['status'] == 1) {
 					$check_status = array('check_status' => ($article[0]['check_status'] + 1));

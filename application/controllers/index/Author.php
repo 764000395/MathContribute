@@ -55,6 +55,12 @@ class Author extends MY_Controller {
 
 				//执行修改操作
 				$article['check_status'] = -2 - $old_article[0]['check_status']; //改为返修前的状态
+
+				//如果是编委定稿时要求返修，不改变指定审核状态，还由原来的编委审核
+				if ($article['check_status'] != 2) {
+					$article['allot_status'] = 0;
+				}
+
 				$status = $this->db->update('article', $article, array('article_id' => $article_id));
 				$message = '修改稿件';
 
@@ -66,7 +72,7 @@ class Author extends MY_Controller {
 			}
 
 			//判断操作是否成功
-			$status ? alert_msg('恭喜您' . $message . '成功，我们会尽快为您审核！') : alert_msg($message . '失败，请稍后重试！');
+			$status ? alert_msg('恭喜您' . $message . '成功，我们会尽快为您审核！', 'back2') : alert_msg($message . '失败，请稍后重试！');
 
 		} else {
 			$this->load->view('myhome/contribute.html');
@@ -107,6 +113,7 @@ class Author extends MY_Controller {
 
 		//获取文章列表信息
 		$data['article'] = $this->index_model->get_list_article($where_arr, $offset, $per_page);
+
 		$this->load->view($view_html, $data);
 	}
 
@@ -128,9 +135,40 @@ class Author extends MY_Controller {
 		//进行修改的操作
 		if ($action == 'edit') {
 			//执行修改
-			$upload_config = array(
-				'upload',
+			//
+			//上传文件配置
+			$config = array(
+				'upload_path' => './uploads/attachment/',
+				'allowed_types' => 'doc|docx|pdf|latex', //限制稿件格式，暂定
+				'file_name' => time() . mt_rand(1000, 9999),
 			);
+			$this->load->library('upload', $config);
+			$attachment_url = ''; //稿件上传地址
+			//判断文件是否上传成功，否则返回错误提示信息
+			if (!$this->upload->do_upload('attachment')) {
+				alert_msg('稿件上传失败：' . $this->upload->display_errors('', ''));
+			} else {
+				$attachment_url = 'uploads/attachment/' . $this->upload->data('file_name');
+			}
+
+			//接收稿件其他信息
+			$data = array(
+				'title' => $this->input->post('title'),
+				'keywords' => $this->input->post('keywords'),
+				'abstract' => $this->input->post('abstract'),
+				'attachment_url' => $attachment_url,
+				'create_time' => time(),
+				'author' => $this->input->post('author'),
+				'check_status' => -$article[0]['check_status'] - 2,
+				'allot_status' => 0,
+			);
+			$status = $this->db->update('article', $data, array('article_id' => $article_id));
+			if ($status) {
+				@unlink($this->config->item('MYPATH') . $article[0]['attachment_url']);
+				alert_msg('修改成功！', 'back2');
+			} else {
+				alert_msg('修改失败，请稍后重试!');
+			}
 		} else {
 			//查看要修改稿件的具体信息
 			$data['article'] = $article[0];
@@ -143,6 +181,8 @@ class Author extends MY_Controller {
 			} else {
 				$view_html = 'author/info_article.html';
 			}
+			//获取审核意见
+			$data['suggest'] = $this->index_model->get_name_suggest(array('article_id' => $article_id, 'suggest.status is not null' => null));
 			$this->load->view($view_html, $data);
 		}
 	}
