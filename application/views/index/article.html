@@ -39,7 +39,7 @@
                         <?=$article['author']?>
                     </font>
                     <font>时间：
-                        <?=date('Y-m-d H:i:s', $article['use_time'])?>
+                        <?=empty($article['use_time'])?'暂未完成审核':date('Y-m-d H:i:s', $article['use_time'])?>
                     </font>
                     <font> 访问量：
                         <?=$article['read_total']?>

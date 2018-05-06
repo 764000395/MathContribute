@@ -30,7 +30,7 @@
 					<?=empty($a['use_time'])?'暂未录用<br>'.format_check_status($a['check_status']):date('Y-m-d H:i:s', $a['use_time'])?>
 				</td>
 				<td align="center">
-					【<a href="javascript:" id='action' data-season="<?=$a['season']?>" data-article_id="<?=$a['article_id']?>">
+					【<a class='action' href="javascript:"  data-season="<?=$a['season']?>" data-article_id="<?=$a['article_id']?>">
 						<?=$a['season'] == 'next' ? '移除' : '设为下期目录'?>
 					</a>】
 				</td>
@@ -41,7 +41,7 @@
 </html>
 <script type="text/javascript" src="<?=base_url('style/index')?>/js/jquery-3.2.1.min.js"></script>
 <script>
-	$('#action').click(function(event) {
+	$('.action').click(function(event) {
 		/* Act on the event */
 		var type = 'set_next';
 		if($(this).attr('data-season') == 'next'){

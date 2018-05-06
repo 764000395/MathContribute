@@ -10,12 +10,24 @@ class Home extends CI_Controller {
 	/************************ 前端内容 Begin ************************/
 	//首页
 	public function index() {
+		//友情链接
 		$data['link'] = $this->index_model->get_content_list(array('col_id >=' => 21, 'col_id <=' => 24));
-		$data['newest_article'] = $this->index_model->get_article_list(array('check_status' => 3), 0, 6);
+
+		//最新录用
+		$data['latest_article'] = $this->index_model->get_list_article_season(array('check_status' => 3), 0, 6);
+
+		//当期目录
+		$data['now_article'] = $this->index_model->get_list_article_season(array('use_time >=' => get_season_time(time(), 'start'), 'use_time <=' => get_season_time(time(), 'end'), 'check_status' => 3), 0, 6);
+
+		//下期目录
+		$data['next_article'] = $this->index_model->get_list_article_season(array('season' => 'next'), 0, 6);
+
+		//过刊浏览 按照日期升序排列
+		$data['overdue_article'] = $this->db->order_by('use_time ASC')->limit(6, 0)->get_where('article', array('check_status' => 3))->result_array();
 		$this->load->view('index/index.html', $data);
 	}
 
-	//稿件
+	//查看稿件 或 列表稿件
 	public function article($action, $id = 0) {
 		if (!is_numeric($id)) {
 			alert_msg('您访问的内容不存在！');
@@ -23,7 +35,7 @@ class Home extends CI_Controller {
 		//查看稿件
 		if ($action == 'see') {
 			//获取稿件信息
-			$article = $this->index_model->get_article_info(array('article_id' => $id, 'check_status' => 3));
+			$article = $this->index_model->get_article_info(array('article_id' => $id));
 			//判断稿件是否存在
 			if (empty($article)) {
 				alert_msg('您访问的内容不存在！');
@@ -36,20 +48,22 @@ class Home extends CI_Controller {
 			$this->load->view('index/article.html', $data);
 		} else {
 			switch ($action) {
-			case 'all_list':
-				$where_arr = array('check_status' => 3);
-				break;
 			case 'now_list':
-				# code...
+				$where_arr = array('use_time >=' => get_season_time(time(), 'start'), 'use_time <=' => get_season_time(time(), 'end'), 'check_status' => 3);
+				$col_name = '当期目录';
 				break;
-			case 'last_list':
-				# code...
+			case 'next_list':
+				$where_arr = array('season' => 'next');
+				$col_name = '下期目录';
 				break;
-			case 'pass_list':
-				# code...
+			case 'overdue_list':
+				$where_arr = array('check_status' => 3);
+				$data['article'] = $this->db->order_by('use_time ASC')->limit(6, 0)->get_where('article', array('check_status' => 3))->result_array();
+				$col_name = '过刊浏览';
 				break;
 			default:
-				# code...
+				$where_arr = array('check_status' => 3);
+				$col_name = '最新录用';
 				break;
 			}
 			$offset = $id;
@@ -62,7 +76,11 @@ class Home extends CI_Controller {
 			$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
 
 			//获取列表稿件信息
-			$data['article'] = $this->index_model->get_article_list($where_arr, $offset, $per_page);
+			if ($action != 'overdue_list') {
+				$data['article'] = $this->index_model->get_list_article_season($where_arr, $offset, $per_page);
+			}
+
+			$data['col_name'] = $col_name;
 			$this->load->view('index/article_list.html', $data);
 		}
 	}
@@ -588,12 +606,16 @@ class Home extends CI_Controller {
 			alert_msg('无法完成下载！', 'close');
 		}
 
-		$authority = $article[0]['check_token'] == $action ? false : true;
+		$authority = $article[0]['check_token'] == $action && !empty($action) ? false : true;
 		//如果用户不是专家或者编委，不能下载未经过编委会审核的稿件
 		//0=未审核 1=初审完成 2=二审完成 3=编委会定稿完成 -1=拒稿
 		$identity = $this->session->userdata('identity');
 
 		if ($authority && $identity != 'specialist' && $identity != 'editorial' && $article[0]['check_status'] < 3) {
+			//如果是未完成审核的稿件
+			if ($article[0]['check_status'] < 3) {
+				alert_msg('该稿件未完成审核，暂不能下载！');
+			}
 			alert_msg('无法完成下载！', 'close');
 		}
 

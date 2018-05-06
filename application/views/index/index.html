@@ -134,11 +134,11 @@
                 <div class="info_items">
                     <div class="info_item_title infopadding">
                         <h4 class="fleft">最新录用</h4>
-                        <a href="<?=site_url('home/article/all_list/0')?>" class="more fright">more</a>
+                        <a href="<?=site_url('home/article/latest_list/0')?>" class="more fright">more</a>
                     </div>
                     <ul class="padding">
-                        <?php foreach($newest_article as $n):?>
-                        <li><a href="<?=site_url('home/article/see/'.$n['article_id'])?>" title="<?=$n['title']?>"><?=mb_strlen($n['title'])>10?mb_substr($n['title'], 0, 10).'...':$n['title']?><font class="fright"><?=date('Y-m-d', $n['use_time'])?></font></a></li>
+                        <?php foreach($latest_article as $l):?>
+                        <li><a href="<?=site_url('home/article/see/'.$l['article_id'])?>" title="<?=$l['title']?>"><?=mb_strlen($l['title'])>12?mb_substr($l['title'], 0, 12).'...':$l['title']?><font class="fright"><?=date('Y-m-d', $l['use_time'])?></font></a></li>
                         <?php endforeach;?>
                         <!-- <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
@@ -150,29 +150,33 @@
                 <div class="info_items">
                     <div class="info_item_title infopadding">
                         <h4 class="fleft">当期目录</h4>
-                        <a href="second.html" class="more fright">more</a>
+                        <a href="<?=site_url('home/article/now_list/0')?>" class="more fright">more</a>
                     </div>
                     <ul class="padding">
+                        <?php foreach($now_article as $now):?>
+                        <li><a title="<?=$now['title']?>" href="<?=site_url('home/article/see/'.$now['article_id'])?>"><?=mb_strlen($now['title'])>12?mb_substr($now['title'], 0, 12).'...':$now['title']?><font class="fright"><?=date('Y-m-d', $now['use_time'])?></font></a></li>
+                        <?php endforeach;?>
+                        <!-- <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
+                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li> -->
                     </ul>
                 </div>
                 <div class="info_items">
                     <div class="info_item_title infopadding">
                         <h4 class="fleft">下期目录</h4>
-                        <a href="second.html" class="more fright">more</a>
+                        <a href="<?=site_url('home/article/next_list/0')?>" class="more fright">more</a>
                     </div>
                     <ul class="padding">
+                        <?php foreach($next_article as $next):?>
+                        <li><a title="<?=$next['title']?>" href="<?=site_url('home/article/see/'.$next['article_id'])?>"><?=mb_strlen($next['title'])>16?mb_substr($next['title'], 0, 16).'...':$next['title']?><font class="fright"></font></a></li>
+                        <?php endforeach;?>
+                        <!-- <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
+                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li> -->
                     </ul>
                 </div>
             </div>
@@ -180,15 +184,17 @@
                 <div class="info_items">
                     <div class="info_item_title infopadding">
                         <h4 class="fleft">过刊浏览</h4>
-                        <a href="second.html" class="more fright">more</a>
+                        <a href="<?=site_url('home/article/overdue_list/0')?>" class="more fright">more</a>
                     </div>
                     <ul class="padding">
-                        <li><a href="second.html">123456789123456789<font class="fright">2018-03-22</font></a></li>
+                        <?php foreach($overdue_article as $o):?>
+                        <li><a href="<?=site_url('home/article/see/'.$o['article_id'])?>"><?=mb_strlen($o['title'])>12?mb_substr($o['title'], 0, 12).'...':$o['title']?><font class="fright"><?=date('Y-m-d', $o['use_time'])?></font></a></li>
+                        <?php endforeach;?>
+                        <!-- <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
                         <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
-                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li>
+                        <li><a href="second.html">123456789<font class="fright">2018-03-22</font></a></li> -->
                     </ul>
                 </div>
                 <div class="info_items">
