@@ -102,5 +102,12 @@ class Admin_model extends CI_Model {
 		return $status;
 	}
 
+	/*
+		编辑按季节查稿 获取稿件列表
+	 */
+	public function get_list_article_season($where_arr, $offset, $per_page = 10) {
+		$status = $this->db->order_by('use_time DESC, check_status DESC, create_time DESC')->limit($per_page, $offset)->get_where('article', $where_arr)->result_array();
+		return $status;
+	}
 	/****************** 前台管理相关  End  *******************/
 }

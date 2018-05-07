@@ -368,18 +368,17 @@ class Admin extends CI_Controller {
 
 	//在线期刊  未完成
 	public function periodical($type, $offset = 0) {
-		$season = get_season_time();
 		switch ($type) {
 		case 'now': //当期目录
-			$season = get_season_time();
+			$where_arr = $where_arr = array('use_time >=' => get_season_time(time(), 'start'), 'use_time <=' => get_season_time(time(), 'end'), 'check_status' => 3);
+			break;
+		case 'next': //下期目录
+			$where_arr = array('season' => 'next');
+			break;
+		case 'overdue': //过刊浏览
 			$where_arr = array('check_status' => 3);
-			break;
-		case 'last': //下期目录
-			$season = get_season_time('last');
-			$where_arr = array('use_time >=' => $season['start'], 'use_time <=' => $season['end']);
-			break;
-		case 'pass': //过刊浏览
-
+			$data['article'] = $this->db->order_by('use_time ASC')->limit(6, 0)->get_where('article', array('check_status' => 3))->result_array();
+			$col_name = '过刊浏览';
 			break;
 		default:
 			$where_arr = array('check_status' => 3);
@@ -392,9 +391,11 @@ class Admin extends CI_Controller {
 
 		$this->load->library('myclass');
 		$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
-		$status = $this->admin_model->get_article_list($where_arr, $offset, ', use_time');
-		$data['article'] = $status;
-		$this->load->view('admin/home');
+		$status = $this->admin_model->get_list_article_season($where_arr, $offset, ', use_time');
+		if ($type != 'overdue') {
+			$data['article'] = $status;
+		}
+		$this->load->view('admin/home/season_article_list.html', $data);
 
 	}
 

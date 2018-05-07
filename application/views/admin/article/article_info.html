@@ -19,7 +19,9 @@
         </tr>
         <tr>
             <td align="right">作者：</td>
-            <td><?=$article['author']?></td>
+            <td><?=$article['author']?><br><br>
+                <a href="<?=site_url('admin/admin/user_info/see/'.$article['user_id'])?>">查看投稿人信息</a>                
+            </td>
         </tr>
         <tr>
             <td align="right">稿件关键字：</td>
@@ -40,7 +42,8 @@
         <?php foreach($suggest as $s):?>
         <tr>
             <td align="right">
-                <?=format_suggest_name($s['rank'], $s['realname'])?>
+                <?=format_suggest_name($s['rank'], $s['realname'])?><br><br>
+                <a href="<?=site_url('admin/admin/user_info/see/'.$s['user_id'])?>">查看用户信息</a>
             </td>
             <td>
                 <?=$s['content']?>
