@@ -27,7 +27,7 @@ class Home extends CI_Controller {
 		$this->load->view('index/index.html', $data);
 	}
 
-	//查看稿件 或 列表稿件
+	//查看稿件 或 列表稿件 在线期刊
 	public function article($action, $id = 0) {
 		if (!is_numeric($id)) {
 			alert_msg('您访问的内容不存在！');
@@ -83,6 +83,29 @@ class Home extends CI_Controller {
 			$data['col_name'] = $col_name;
 			$this->load->view('index/article_list.html', $data);
 		}
+	}
+
+	//在线期刊 各年目次
+	public function year($year, $season, $offset = 0) {
+		if (!is_numeric($year) || !is_numeric($season) || $season < 1 || $season > 4 || $year < 2018) {
+			alert_msg('您访问的内容不存在！', 'close');
+		}
+		$time = mktime(0, 0, 0, $season * 3, 1, $year);
+		//print_r($season);die;
+		$where_arr = array('use_time >=' => get_season_time($time, 'start'), 'use_time <=' => get_season_time($time, 'end'), 'check_status' => 3);
+
+		$data['col_name'] = $year . '年 第 ' . $season . ' 期';
+
+		$page_url = site_url("home/year/$year/$season");
+		$total_rows = $this->db->where($where_arr)->count_all_results('article');
+		$offset_uri_segment = 5;
+		$per_page = 10;
+		$this->load->library('myclass');
+		$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
+
+		$data['article'] = $this->index_model->get_list_article_season($where_arr, $offset, $per_page);
+
+		$this->load->view('index/article_list.html', $data);
 	}
 
 	//快速检索
