@@ -30,7 +30,7 @@ class Home extends CI_Controller {
 	//查看稿件 或 列表稿件 在线期刊
 	public function article($action, $id = 0) {
 		if (!is_numeric($id)) {
-			alert_msg('您访问的内容不存在！');
+			alert_msg('您访问的内容不存在！', 'go', base_url());
 		}
 		//查看稿件
 		if ($action == 'see') {
@@ -38,7 +38,7 @@ class Home extends CI_Controller {
 			$article = $this->index_model->get_article_info(array('article_id' => $id));
 			//判断稿件是否存在
 			if (empty($article)) {
-				alert_msg('您访问的内容不存在！');
+				alert_msg('您访问的内容不存在！', 'go', base_url());
 			}
 
 			//阅读量+1
@@ -85,7 +85,7 @@ class Home extends CI_Controller {
 		}
 	}
 
-	//在线期刊 各年目次
+	//在线期刊 各年目次文章列表
 	public function year($year, $season, $offset = 0) {
 		if (!is_numeric($year) || !is_numeric($season) || $season < 1 || $season > 4 || $year < 2018) {
 			alert_msg('您访问的内容不存在！', 'close');
@@ -106,6 +106,22 @@ class Home extends CI_Controller {
 		$data['article'] = $this->index_model->get_list_article_season($where_arr, $offset, $per_page);
 
 		$this->load->view('index/article_list.html', $data);
+	}
+
+	public function year_list($offset = 0) {
+		$page_url = site_url('home/year_list');
+		$total_rows = date('Y') - 2017;
+		$offset_uri_segment = 3;
+		$per_page = 10;
+		$this->load->library('myclass');
+		$data['link'] = $this->myclass->fenye($page_url, $total_rows, $offset_uri_segment, $per_page);
+		$data['season'] = array(1, 2, 3, 4);
+		$this_year = date('Y');
+		for ($i = $this_year; $i >= 2018; $i--) {
+			$data['year'][] = $i;
+		}
+		$data['col_name'] = '各年目次';
+		$this->load->view('index/year_list.html', $data);
 	}
 
 	//快速检索
@@ -168,13 +184,13 @@ class Home extends CI_Controller {
 	//栏目直接对应内容页
 	public function content($col_id) {
 		if (!is_numeric($col_id)) {
-			alert_msg('您访问的内容不存在！');
+			alert_msg('您访问的内容不存在！', 'go', base_url());
 		}
 
 		//获取栏目信息
 		$pid = $this->index_model->get_col_info(array('col_id' => $col_id));
 		if (empty($pid)) {
-			alert_msg('您访问的内容不存在！');
+			alert_msg('您访问的内容不存在！', 'go', base_url());
 		}
 		$data['this_col_name'] = $pid[0]['col_name'];
 		//判断是否为1级栏目
@@ -196,11 +212,11 @@ class Home extends CI_Controller {
 	//作者指南 审者指南  下载中心
 	public function list($col_id, $offset = 0) {
 		if (!is_numeric($col_id)) {
-			alert_msg('您访问的内容不存在！');
+			alert_msg('您访问的内容不存在！', 'go', base_url());
 		}
 		$col = $this->index_model->get_col_info(array('col_id' => $col_id));
 		if (empty($col)) {
-			alert_msg('您访问的内容不存在！');
+			alert_msg('您访问的内容不存在！', 'go', base_url());
 		}
 		$data['col'] = $col[0];
 
@@ -237,7 +253,7 @@ class Home extends CI_Controller {
 	//链接列表
 	public function link($col_id, $offset = 0) {
 		if (!is_numeric($col_id)) {
-			alert_msg('您访问的内容不存在！');
+			alert_msg('您访问的内容不存在！', 'go', base_url());
 		}
 
 		//获取友情链接下所有栏目信息
