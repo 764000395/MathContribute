@@ -160,7 +160,7 @@ class Editorial extends MY_Controller {
 		$status2 = $this->db->insert('suggest', array('article_id' => $article_id, 'user_id' => $set_arr[1], 'rank' => $article['check_status'], 'token' => $check_token));
 		if ($status1 && $status2) {
 
-			$this->db->update('article', array('allot_status' => 1, 'check_token' => $check_token), array('article_id' => $article_id));
+			$this->db->update('article', array('allot_status' => 1, 'check_token' => $check_token, 'remind_time' => time()), array('article_id' => $article_id));
 
 			//给指定审稿的两个专家发邮件提醒专家审核
 			$check_url1 = site_url('home/check/see/' . $article_id . '/' . $specialist1[0]['user_id'] . '/' . $check_token);

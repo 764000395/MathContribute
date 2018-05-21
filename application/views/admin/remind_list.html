@@ -12,7 +12,7 @@
     		<th align="center">标题</th>
     		<th align="center">关键词</th>
     		<th align="center">投稿时间</th>
-    		<th align="center">审核截止时间</th>
+    		<th align="center">上次提醒时间时间</th>
     		<th align="center">审核状态</th>
     		<th align="center">操作</th>
     	</tr>
@@ -28,19 +28,23 @@
 					<?=date('Y-m-d H:i:s', $a['create_time'])?>
 				</td>
 				<td align="center">
-					<?=$a['check_deadline']?date('Y-m-d H:i:s', $a['check_deadline']):''?>
+					<?=date('Y-m-d H:i:s', $a['remind_time'])?>
 				</td>
 				<td align="center"><?=format_check_status($a['check_status'])?></td>
-				<td align="center">【<a href="javascript:del(<?=$a['article_id']?>)">删除</a>】</td>
+				<td>
+					【<a class="remind" href="<?=site_url('admin/admin/remind/do/'.$a['article_id'])?>">
+						提醒专家审稿
+					</a>】
+				</td>
 			</tr>
 		<?php endforeach;?>
     </table>
 </body>
 </html>
+<script type="text/javascript" src="<?=base_url('style/index')?>/js/jquery-3.2.1.min.js"></script>
 <script>
-	function del(id){
-		if(confirm('确定要删除该稿件？删除后将不能恢复！')){
-			location.href = '<?=site_url("admin/admin/delete_article/")?>'+id;
-		}
-	}
+	$('.remind').click(function(event) {
+		/* Act on the event */
+		$(this).html('正在发送邮件...').css('color', '#666');
+	});
 </script>

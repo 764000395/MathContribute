@@ -47,7 +47,7 @@ class Myclass {
 			'charset' => 'utf-8',
 		);
 		$this->CI->email->initialize($config);
-		$this->CI->email->from('ascexz@126.com', '数学季刊投稿系统');
+		$this->CI->email->from($this->CI->config->item('smtp_user'), '数学季刊投稿系统');
 		$this->CI->email->to($to);
 		$this->CI->email->subject($subject);
 		$this->CI->email->message($message);

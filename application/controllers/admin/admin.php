@@ -18,10 +18,47 @@ class Admin extends CI_Controller {
 	public function index() {
 		$this->load->view('admin/index.html');
 	}
-	public function copy() {
-		$this->load->view('admin/copy.html');
+
+	//提醒专家审稿列表
+	public function remind($action = 'see', $id = 0) {
+		if ($action == 'do') {
+			$where_arr = array('article_id' => $id, 'suggest.status is null' => null);
+			$other_info = ', token, email';
+			$suggest = $this->admin_model->get_suggest_info($where_arr, $other_info);
+			if (empty($suggest)) {
+				alert_msg('已经提醒专家审稿，请勿重复操作！');
+			}
+			$this->load->library('myclass');
+			$subject = '数学季刊投稿系统邀请您审核稿件！';
+			$message = '您有一篇未完成审核的稿件，请及时审核。访问 ';
+			foreach ($suggest as $s) {
+				$message = '尊敬的' . $s['realname'] . '您好!' . $message . site_url('home/check/see/' . $id . '/' . $s['user_id'] . '/' . $s['token']);
+				$this->myclass->send_email($s['email'], $subject, $message);
+			}
+			$status = $this->db->update('article', array('remind_time' => time()), array('article_id' => $id));
+			if ($status) {
+				alert_msg('已发邮件提醒专家审稿！');
+			} else {
+				alert_msg('提醒失败，请稍后再试！');
+			}
+		} else {
+			$offset = $id;
+			$remind_time = time() - $this->config->item('remind_check_T');
+			$where_arr = array('remind_time <=' => $remind_time, 'allot_status' => 1, 'check_status !=' => 3);
+			$page_url = site_url('admin/admin/remind/see');
+			$total_rows = $this->db->where($where_arr)->count_all_results('article');
+			$offset_uri_segment = 4;
+			$per_page = 10;
+			$this->load->library('myclass');
+			$data['link'] = $this->myclass->fenye($per_page, $total_rows, $offset_uri_segment, $per_page);
+
+			$other_info = ', remind_time';
+			$data['article'] = $this->admin_model->get_article_list($where_arr, $offset, $other_info, $per_page);
+			$this->load->view('admin/remind_list.html', $data);
+		}
 	}
 
+	//修改密码
 	public function edit_password() {
 		$this->load->view('admin/edit_password.html');
 	}
@@ -153,7 +190,14 @@ class Admin extends CI_Controller {
 	/****************** 用户相关 END *******************/
 
 	/****************** 稿件相关  BEGIN  *******************/
-
+	public function delete_article($article_id) {
+		$status = $this->db->delete('article', array('article_id' => $article_id));
+		if ($status) {
+			alert_msg('删除成功！');
+		} else {
+			alert_msg('删除失败，请稍后重试');
+		}
+	}
 	//文章列表
 	public function article_list($type, $offset = 0) {
 		switch ($type) {

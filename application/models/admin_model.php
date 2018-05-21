@@ -58,7 +58,7 @@ class Admin_model extends CI_Model {
 
 	//获取稿件评论信息
 	public function get_suggest_info($where_arr, $other_info = '') {
-		$get_info = 'sug_id, , suggest.user_id, content, rank, time, realname';
+		$get_info = 'sug_id, suggest.user_id, content, rank, time, realname' . $other_info;
 		$status = $this->db->select($get_info)->join('user', 'user.user_id = suggest.user_id')->order_by('rank ASC')->get_where('suggest', $where_arr)->result_array();
 		return $status;
 	}
