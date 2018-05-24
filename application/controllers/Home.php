@@ -126,8 +126,9 @@ class Home extends CI_Controller {
 
 	//快速检索
 	public function search() {
-		$search = $this->input->post('search');
+		$search = addslashes($this->input->post('search')); //转义特殊字符防止sql注入
 		$data['article'] = $this->index_model->get_search_list($search);
+		//echo $this->db->last_query();
 		$data['link'] = '';
 		$data['col_name'] = '搜索结果';
 		$this->load->view('index/article_list.html', $data);

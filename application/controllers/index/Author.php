@@ -20,7 +20,7 @@ class Author extends MY_Controller {
 			//上传文件配置
 			$config = array(
 				'upload_path' => './uploads/attachment/',
-				'allowed_types' => 'doc|docx|pdf|latex', //限制稿件格式，暂定
+				'allowed_types' => 'doc|docx|pdf|tex|ctex', //限制稿件格式，暂定
 				'file_name' => time() . mt_rand(1000, 9999),
 			);
 			$this->load->library('upload', $config);
