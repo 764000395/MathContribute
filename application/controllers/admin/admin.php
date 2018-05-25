@@ -175,7 +175,7 @@ class Admin extends CI_Controller {
 		用户搜索
 	 */
 	public function user_search($view_type = '') {
-		$msg = $this->input->post('search');
+		$msg = addslashes($this->input->post('search'));
 		if ($view_type == 'ac') {
 			$where_arr = array('status' => 0);
 			$view_html = 'admin/user/ac_user_list.html';
