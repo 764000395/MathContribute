@@ -96,16 +96,17 @@ class Admin extends CI_Controller {
 	public function user_list($type, $offset = 0) {
 		$view_html = 'admin/user/user_list.html';
 		switch ($type) {
-		case 'author':
-		case 'specialist':
-		case 'editorial':
+		case 'author': //作者
+		case 'specialist': //专家
+		case 'editorial': //编委
+		case 'edit': //编辑
 			$where_arr = array('identity' => $type);
 			break;
-
 		//未认证
 		case 'ac_author':
 		case 'ac_specialist':
 		case 'ac_editorial':
+		case 'ac_edit':
 			$where_arr = array('identity' => mb_substr($type, 3), 'status' => 0);
 			$view_html = 'admin/user/ac_user_list.html';
 			break;
