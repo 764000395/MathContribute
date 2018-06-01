@@ -280,7 +280,7 @@ class Admin extends CI_Controller {
 				alert_msg('删除失败，请检查你的网络！');
 			}
 		} else if ($action == 'search') {
-			$search = $this->input->post('search');
+			$search = addslashes($this->input->post('search'));
 			$data['comment'] = $this->admin_model->get_comment_search($search);
 			$data['link'] = '';
 			$this->load->view('admin/home/comment_list.html', $data);
