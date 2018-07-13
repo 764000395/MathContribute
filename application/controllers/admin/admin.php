@@ -30,9 +30,9 @@ class Admin extends CI_Controller {
 			}
 			$this->load->library('myclass');
 			$subject = '数学季刊投稿系统邀请您审核稿件！';
-			$message = '您有一篇未完成审核的稿件，请及时审核。访问 ';
+			$message_insert = '您有一篇未完成审核的稿件，请及时审核。请访问 ';
 			foreach ($suggest as $s) {
-				$message = '尊敬的' . $s['realname'] . '您好!' . $message . site_url('home/check/see/' . $id . '/' . $s['user_id'] . '/' . $s['token']);
+				$message = '尊敬的' . $s['realname'] . '您好!' . $message_insert . site_url('home/check/see/' . $id . '/' . $s['user_id'] . '/' . $s['token']) . ' 或登录系统进行审稿。';
 				$this->myclass->send_email($s['email'], $subject, $message);
 			}
 			$status = $this->db->update('article', array('remind_time' => time()), array('article_id' => $id));
